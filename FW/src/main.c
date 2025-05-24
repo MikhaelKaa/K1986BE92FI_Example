@@ -9,7 +9,7 @@
 #include "MDR32F9Qx_board.h"
 #include "MDR32F9Qx_rst_clk.h"
 #include "MDR32F9Qx_port.h"
-
+ 
 #ifndef VERSION
 #define VERSION "Dev build 0.00"
 const unsigned char build_version[] = VERSION " " __DATE__ " "__TIME__;
@@ -83,14 +83,14 @@ void clk_CoreConfig(void)
 	// Выбор источника тактирования ядра процессора
 	RST_CLK_CPUclkSelection(RST_CLK_CPUclkCPU_C3);
 
-	// Подача тактовой частоты на PORTB, PORTD
-	RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTB, ENABLE);
-	// RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTD, ENABLE);
 }
 
 // Функция инициализации светодиода VD7
 void led_Init(void)
 {
+	// Подача тактовой частоты на PORTB, PORTD
+	RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTB, ENABLE);
+
 	// Создание структуры для инициализации порта	
 	PORT_InitTypeDef PORT_InitStructure;
 

@@ -31,15 +31,10 @@ src/main.c \
 C_SOURCES 	+= platform/MDR32F9Qx_StdPeriph_Driver/src/MDR32F9Qx_port.c
 
 # # printf
-# C_SOURCES 	+= app/retarget/retarget.c
+C_SOURCES 	+= app/retarget/retarget.c
 # # uCMD
 # C_SOURCES 	+= $(wildcard app/u_read_line/*.c)
 # C_SOURCES 	+= $(wildcard app/utils/*.c)
-# # ModBus
-# C_SOURCES += $(wildcard lib/modbus/*.c)
-# C_SOURCES += $(wildcard lib/modbus/port_k1946vk035/*.c)
-# C_SOURCES += $(wildcard lib/modbus/rtu/*.c)
-# C_SOURCES += $(wildcard lib/modbus/functions/*.c)
 
 
 # ASM sources
@@ -100,9 +95,9 @@ C_INCLUDES =  \
 -Iplatform/K1986BE92FI/Include \
 -Iplatform/CMSIS/Core/Include \
 
-# C_INCLUDES += -Iapp/retarget/
-# C_INCLUDES += -Iapp/u_read_line
-# C_INCLUDES += -Iapp/utils
+C_INCLUDES += -Iapp/retarget/
+C_INCLUDES += -Iapp/u_read_line
+C_INCLUDES += -Iapp/utils
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
