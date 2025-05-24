@@ -8,6 +8,8 @@
         "mdr32f9qx_board.h": "c",
         "k1986be92fi.h": "c",
         "mdr32fxqi_config.h": "c",
-        "mdr32fxqi_port.h": "c"
+        "mdr32fxqi_port.h": "c",
+        "system_mdr32f9q2i.h": "c",
+        "memory_man.h": "c"
     }
 }

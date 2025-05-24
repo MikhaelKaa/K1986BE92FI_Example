@@ -10,7 +10,10 @@
                 "${workspaceRoot}\\platform\\**",
                 "${workspaceFolder}/platform/K1986BE92FI/Include",
                 "${workspaceFolder}/platform/SPL/MDR32FxQI",
-                "${workspaceFolder}/platform/SPL/MDR32FxQI/inc"
+                "${workspaceFolder}/platform/SPL/MDR32FxQI/inc",
+                "${workspaceFolder}/app/retarget",
+                "${workspaceFolder}/app/u_read_line",
+                "${workspaceFolder}/app/mem"
             ],
             "defines": [
                 "HSE_Value=8000000",

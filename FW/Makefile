@@ -29,12 +29,13 @@ platform/SPL/MDR32FxQI/src/MDR32FxQI_rst_clk.c \
 src/main.c \
 
 C_SOURCES 	+= platform/SPL/MDR32FxQI/src/MDR32FxQI_port.c
+C_SOURCES 	+= platform/SPL/MDR32FxQI/src/MDR32FxQI_uart.c
 
 # # printf
 C_SOURCES 	+= app/retarget/retarget.c
 # # uCMD
-# C_SOURCES 	+= $(wildcard app/u_read_line/*.c)
-# C_SOURCES 	+= $(wildcard app/utils/*.c)
+C_SOURCES 	+= $(wildcard app/u_read_line/*.c)
+C_SOURCES 	+= $(wildcard app/mem/*.c)
 
 
 # ASM sources
@@ -100,7 +101,7 @@ C_INCLUDES =  \
 
 C_INCLUDES += -Iapp/retarget/
 C_INCLUDES += -Iapp/u_read_line
-C_INCLUDES += -Iapp/utils
+C_INCLUDES += -Iapp/mem
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
