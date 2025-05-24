@@ -121,13 +121,11 @@ int main() {
     printf_init();
     show_version();
     ucmd_default_init();
-#define DELAY_TIME (UINT16_MAX*10)
-
+    int led_cnt = 0, led_tgl = 0;
     while (1) {
-        delay(DELAY_TIME);
-        PORT_WriteBit(MDR_PORTB, PORT_Pin_7, SET);
-        delay(DELAY_TIME);
-        PORT_WriteBit(MDR_PORTB, PORT_Pin_7, RESET);
+        if(led_cnt++%4096 == 0) {
+            PORT_WriteBit(MDR_PORTB, PORT_Pin_7, led_tgl++%2);
+        }
         ucmd_default_proc();
         printf_flush();
     }
