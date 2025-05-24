@@ -5,11 +5,15 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "MDR32F9Qx_config.h"
-#include "MDR32F9Qx_board.h"
-#include "MDR32F9Qx_rst_clk.h"
-#include "MDR32F9Qx_port.h"
- 
+// #include "MDR32F9Qx_config.h"
+// #include "MDR32F9Qx_board.h"
+// #include "MDR32F9Qx_rst_clk.h"
+// #include "MDR32F9Qx_port.h"
+
+#include "MDR32F9Q2I.h"
+#include "MDR32FxQI_rst_clk.h"
+#include "MDR32FxQI_port.h"
+
 #ifndef VERSION
 #define VERSION "Dev build 0.00"
 const unsigned char build_version[] = VERSION " " __DATE__ " "__TIME__;
@@ -108,12 +112,12 @@ int main() {
   clk_CoreConfig();
   led_Init();
 #define DELAY_TIME (UINT16_MAX*10)
-  // int led_cnt = 0;
+
   while (1) {
     delay(DELAY_TIME);
-    PORT_WriteBit(MDR_PORTB, PORT_Pin_7, Bit_SET);
+    PORT_WriteBit(MDR_PORTB, PORT_Pin_7, SET);
     delay(DELAY_TIME);
-    PORT_WriteBit(MDR_PORTB, PORT_Pin_7, Bit_RESET);
+    PORT_WriteBit(MDR_PORTB, PORT_Pin_7, RESET);
   }
 }
 

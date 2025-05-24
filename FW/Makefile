@@ -25,10 +25,10 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 platform/K1986BE92FI/Source/system_MDR32F9Q2I.c \
-platform/MDR32F9Qx_StdPeriph_Driver/src/MDR32F9Qx_rst_clk.c \
+platform/SPL/MDR32FxQI/src/MDR32FxQI_rst_clk.c \
 src/main.c \
 
-C_SOURCES 	+= platform/MDR32F9Qx_StdPeriph_Driver/src/MDR32F9Qx_port.c
+C_SOURCES 	+= platform/SPL/MDR32FxQI/src/MDR32FxQI_port.c
 
 # # printf
 C_SOURCES 	+= app/retarget/retarget.c
@@ -85,13 +85,16 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DHSE_Value="8000000" \
--DUSE_MDR1986VE9x
+-DUSE_MDR1986VE9x \
+-DUSE_MDR32F9Q2I
+
 # AS includes
 AS_INCLUDES = 
 
 # C includes
 C_INCLUDES =  \
--Iplatform/MDR32F9Qx_StdPeriph_Driver/inc \
+-Iplatform/SPL/MDR32FxQI/inc \
+-Iplatform/SPL/MDR32FxQI \
 -Iplatform/K1986BE92FI/Include \
 -Iplatform/CMSIS/Core/Include \
 

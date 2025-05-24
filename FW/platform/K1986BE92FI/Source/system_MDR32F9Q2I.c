@@ -16,7 +16,7 @@
   */
 
 #include "MDR32F9Q2I.h"
-#include "MDR32F9Qx_config.h"
+#include "MDR32FxQI_config.h"
 
 /** @addtogroup __MDR32F9Q2I_System_Private_Variables MDR32F9Q2I System Private Variables
   * @{
