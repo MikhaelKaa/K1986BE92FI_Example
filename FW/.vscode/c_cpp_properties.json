@@ -13,7 +13,8 @@
                 "${workspaceFolder}/platform/SPL/MDR32FxQI/inc",
                 "${workspaceFolder}/app/retarget",
                 "${workspaceFolder}/app/u_read_line",
-                "${workspaceFolder}/app/mem"
+                "${workspaceFolder}/app/mem",
+                "${workspaceFolder}/app/micros"
             ],
             "defines": [
                 "HSE_Value=8000000",

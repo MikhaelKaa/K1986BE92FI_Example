@@ -16,6 +16,8 @@
 #include "MDR32FxQI_rst_clk.h"
 #include "MDR32FxQI_port.h"
 
+#include "micros.h"
+
 #ifndef VERSION
 #define VERSION "Dev build 0.00"
 const unsigned char build_version[] = VERSION " " __DATE__ " "__TIME__;
@@ -121,10 +123,13 @@ int main() {
     printf_init();
     show_version();
     ucmd_default_init();
+    us_timer_init();
     int led_cnt = 0, led_tgl = 0;
     while (1) {
         if(led_cnt++%4096 == 0) {
             PORT_WriteBit(MDR_PORTB, PORT_Pin_7, led_tgl++%2);
+            // printf("test micros: %u\r\n", micros());
+            printf("test micros: %u\r\n", US_TIMER->CNT);
         }
         ucmd_default_proc();
         printf_flush();
