@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "arm_c_cpp_properties",
+            "compilerPath": "C:/arm_tool/gcc/bin/arm-none-eabi-gcc.exe",
+            "includePath": [
+                "C:/arm_tool/gcc/arm-none-eabi/include",
+                "C:/arm_tool/gcc/arm-none-eabi/include/sys/",
+                "C:/arm_tool/gcc/lib/**",
+                "${workspaceRoot}\\platform\\**",
+                "${workspaceFolder}/platform/MDR32F9Qx_StdPeriph_Driver/inc",
+                "${workspaceFolder}/platform/K1986BE92FI/Include"
+            ],
+            "defines": [
+                "HSE_Value=8000000",
+                "USE_MDR1986VE9x"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-arm"
+        }
+    ],
+    "version": 4
+}

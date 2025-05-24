@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "mdr32f9q2i.h": "c",
+        "mdr32f9qx_lib.h": "c",
+        "mdr32f9qx_config.h": "c",
+        "mdr32fx.h": "c",
+        "mdr32f9qx_rst_clk.h": "c"
+    }
+}
