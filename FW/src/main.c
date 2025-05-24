@@ -55,7 +55,12 @@ void show_version(void) {
 
   printf("%s\r\n", build_version);
   set_display_atrib(F_GREEN);
-  printf ("MCU UNIQID: (not empl) 0x%08x\r\n", 0);
+  printf ("MCU UNIQID4: 0x%08lx\r\n", *(uint32_t*)0x08000FF0);
+  printf ("MCU UNIQID3: 0x%08lx\r\n", *(uint32_t*)0x08000FE0);
+  printf ("MCU UNIQID2: 0x%08lx\r\n", *(uint32_t*)0x08000FD0);
+  printf ("MCU UNIQID1: 0x%08lx\r\n", *(uint32_t*)0x08000FC0);
+  printf ("MCU UNIQID0: 0x%08lx\r\n", *(uint32_t*)0x08000FB0);
+  
   resetcolor();
 
   printf("System core clock %ld MHz\r\n", SystemCoreClock/1000000);
@@ -88,23 +93,24 @@ void clk_CoreConfig(void)
     // Выбор источника тактирования ядра процессора
     RST_CLK_CPUclkSelection(RST_CLK_CPUclkCPU_C3);
 
+    SystemCoreClockUpdate();
 }
 
-// Функция инициализации светодиода VD7
+// Функция инициализации светодиода B7
 void led_Init(void)
 {
-    // Подача тактовой частоты на PORTB, PORTD
+    // Подача тактовой частоты на PORTB
     RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTB, ENABLE);
 
     // Создание структуры для инициализации порта	
     PORT_InitTypeDef PORT_InitStructure;
 
     // Настройки порта: вывод, функция ввода/вывода, цифровой режим, максимальная скорость, Pin2
-    PORT_InitStructure.PORT_OE = PORT_OE_OUT;
-    PORT_InitStructure.PORT_FUNC = PORT_FUNC_PORT;
-    PORT_InitStructure.PORT_MODE = PORT_MODE_DIGITAL;
-    PORT_InitStructure.PORT_SPEED = PORT_SPEED_MAXFAST;
-    PORT_InitStructure.PORT_Pin = (PORT_Pin_7);	
+    PORT_InitStructure.PORT_OE      = PORT_OE_OUT;
+    PORT_InitStructure.PORT_FUNC    = PORT_FUNC_PORT;
+    PORT_InitStructure.PORT_MODE    = PORT_MODE_DIGITAL;
+    PORT_InitStructure.PORT_SPEED   = PORT_SPEED_MAXFAST;
+    PORT_InitStructure.PORT_Pin     = PORT_Pin_7;	
     
     PORT_Init(MDR_PORTB, &PORT_InitStructure);				
 }
