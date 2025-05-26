@@ -118,12 +118,16 @@ void led_Init(void)
 }
 
 int main() {
+  // unbrick delay
+    uint32_t  timeout = 0xfffff; 
+    while( timeout-- );
+
     clk_CoreConfig();
-    led_Init();
     printf_init();
     show_version();
     ucmd_default_init();
     us_timer_init();
+    led_Init();
     int led_cnt = 0, led_tgl = 0;
     while (1) {
         if(led_cnt++%4096 == 0) {
