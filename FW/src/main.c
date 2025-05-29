@@ -17,6 +17,7 @@
 #include "MDR32FxQI_port.h"
 
 #include "micros.h"
+#include "coremark.h"
 
 #ifndef VERSION
 #define VERSION "Dev build 0.00"
@@ -26,17 +27,23 @@ const unsigned char build_version[] = VERSION " " __DATE__ " "__TIME__;
 
 // define command list
 command_t cmd_list[] = {
-    {
-      .cmd  = "help",
-      .help = "print available commands with their help text",
-      .fn   = print_help_cb,
-    },
+  {
+    .cmd  = "help",
+    .help = "print available commands with their help text",
+    .fn   = print_help_cb,
+  },
 
-    {
-      .cmd  = "mem",
-      .help = "memory man, use mem help",
-      .fn   = ucmd_mem,
-    },
+  {
+    .cmd  = "mem",
+    .help = "memory man, use mem help",
+    .fn   = ucmd_mem,
+  },
+
+  {
+    .cmd  = "coremark",
+    .help = "coremark",
+    .fn   = coremark,
+  },
 
     {}, // null list terminator DON'T FORGET THIS!
   };
@@ -81,7 +88,7 @@ void clk_CoreConfig(void)
     if (RST_CLK_HSEstatus() == ERROR) while (1);  	
         
     // Настройка делителя/умножителя частоты CPU_PLL(фазовая подстройка частоты
-    RST_CLK_CPU_PLLconfig(RST_CLK_CPU_PLLsrcHSEdiv1, RST_CLK_CPU_PLLmul5);
+    RST_CLK_CPU_PLLconfig(RST_CLK_CPU_PLLsrcHSEdiv1, RST_CLK_CPU_PLLmul10);
 
     // Включение CPU_PLL
     RST_CLK_CPU_PLLcmd(ENABLE);
@@ -126,14 +133,19 @@ int main() {
     printf_init();
     show_version();
     ucmd_default_init();
-    us_timer_init();
+    ms_timer_init();
     led_Init();
     int led_cnt = 0, led_tgl = 0;
+    uint32_t time_last = 0;
+    uint32_t time = 0;
+    
+
     while (1) {
         if(led_cnt++%4096 == 0) {
-            PORT_WriteBit(MDR_PORTB, PORT_Pin_7, led_tgl++%2);
-            // printf("test micros: %u\r\n", micros());
-            // printf("test micros: %u\r\n", US_TIMER->CNT);
+          time = millis();
+          PORT_WriteBit(MDR_PORTB, PORT_Pin_7, led_tgl++%2);
+          // printf("test ms: %lu\r\n", time-time_last);
+          // time_last = time;
         }
         ucmd_default_proc();
         printf_flush();

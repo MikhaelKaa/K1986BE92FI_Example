@@ -39,6 +39,8 @@ C_SOURCES 	+= app/retarget/retarget.c
 C_SOURCES 	+= $(wildcard app/u_read_line/*.c)
 C_SOURCES 	+= $(wildcard app/mem/*.c)
 
+# CoreMark
+C_SOURCES 	+= $(wildcard app/coremark/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
@@ -89,7 +91,10 @@ AS_DEFS =
 C_DEFS =  \
 -DHSE_Value="8000000" \
 -DUSE_MDR1986VE9x \
--DUSE_MDR32F9Q2I
+-DUSE_MDR32F9Q2I \
+-DITERATIONS=4096 \
+-DCLOCKS_PER_SEC=1000 \
+-DCOREMARK_TIME=millis
 
 # AS includes
 AS_INCLUDES = 
@@ -105,7 +110,7 @@ C_INCLUDES += -Iapp/retarget/
 C_INCLUDES += -Iapp/u_read_line
 C_INCLUDES += -Iapp/mem
 C_INCLUDES += -Iapp/micros
-
+C_INCLUDES += -Iapp/coremark
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
