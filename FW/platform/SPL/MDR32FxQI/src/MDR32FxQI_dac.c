@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_dac.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    17/03/2022
+  * @version V2.1.1i
+  * @date    24/07/2024
   * @brief   This file contains all the DAC firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -30,7 +30,7 @@
   * @{
   */
 
-/** @defgroup DAC_Private_Functions DAC Private Functions
+/** @defgroup DAC_Exported_Functions DAC Exported Functions
   * @{
   */
 
@@ -41,11 +41,14 @@
   */
 void DAC_DeInit(void)
 {
+#if !defined (USE_K1986VE9xI)
     MDR_DAC->DAC1_DATA = 0;
+#endif
     MDR_DAC->DAC2_DATA = 0;
     MDR_DAC->CFG       = 0;
 }
 
+#if !defined (USE_K1986VE9xI)
 /**
   * @brief  Initializes the DAC peripheral.
   * @param  SyncMode - @ref DAC_Sync_Mode - specifies the DAC1, DAC2
@@ -88,6 +91,7 @@ void DAC1_Init(DAC1_Ref_Src DAC1_Ref)
 
     MDR_DAC->CFG = tmpreg_CFG;
 }
+#endif
 
 /**
   * @brief  Initializes the DAC2 peripheral.
@@ -108,6 +112,7 @@ void DAC2_Init(DAC2_Ref_Src DAC2_Ref)
     MDR_DAC->CFG = tmpreg_CFG;
 }
 
+#if !defined (USE_K1986VE9xI)
 /**
   * @brief  Enables or disables the DAC1 peripheral.
   * @param  NewState - @ref FunctionalState - new state of the DAC1 peripheral.
@@ -137,6 +142,7 @@ void DAC1_Cmd(FunctionalState NewState)
     /* Configure DAC_CFG register with new value */
     MDR_DAC->CFG = tmpreg_CFG;
 }
+#endif
 
 /**
   * @brief  Enables or disables the DAC2 peripheral.
@@ -168,6 +174,7 @@ void DAC2_Cmd(FunctionalState NewState)
     MDR_DAC->CFG = tmpreg_CFG;
 }
 
+#if !defined (USE_K1986VE9xI)
 /**
   * @brief  Sets the DAC1 (and DAC2 in Synchronous mode) output data.
   * @param  Data: specifies the DAC output data.
@@ -180,6 +187,7 @@ void DAC1_SetData(uint32_t Data)
 
     MDR_DAC->DAC1_DATA = Data;
 }
+#endif
 
 /**
   * @brief  Sets the DAC2 (and DAC1 in Synchronous mode) output data.
@@ -194,6 +202,7 @@ void DAC2_SetData(uint32_t Data)
     MDR_DAC->DAC2_DATA = Data;
 }
 
+#if !defined (USE_K1986VE9xI)
 /**
   * @brief  Returns the DAC1 output data.
   * @param  None.
@@ -203,6 +212,7 @@ uint32_t DAC1_GetData(void)
 {
     return MDR_DAC->DAC1_DATA;
 }
+#endif
 
 /**
   * @brief  Returns the DAC2 output data.
@@ -214,14 +224,13 @@ uint32_t DAC2_GetData(void)
     return MDR_DAC->DAC2_DATA;
 }
 
-/** @} */ /* End of group DAC_Private_Functions */
+/** @} */ /* End of group DAC_Exported_Functions */
 
 /** @} */ /* End of group DAC */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_dac.c */
-
 

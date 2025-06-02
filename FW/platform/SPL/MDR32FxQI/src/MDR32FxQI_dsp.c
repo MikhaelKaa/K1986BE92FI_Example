@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_dsp.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    17/03/2022
+  * @version V2.0.4i
+  * @date    22/07/2024
   * @brief   This file contains all the DSP firmware functions for MCU MDR32FG16S1QI.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -36,8 +36,6 @@
   */
 
 /* RCC_CLK registers bit address in the alias region */
-#define PERIPH_BASE                 0x40000000
-#define PERIPH_BB_BASE              0x42000000
 #define RST_CLK_OFFSET              (MDR_RST_CLK_BASE - PERIPH_BASE)
 
 #define SFR_OFFSET(TP, MOD, SFR)    ((uint32_t)&((TP*)MOD)->SFR)
@@ -58,7 +56,7 @@
 /** @} */ /* End of group DSP_Private_Constant */
 
 
-/** @defgroup DSP_Private_Functions DSP Private Functions
+/** @defgroup DSP_Exported_Functions DSP Exported Functions
   * @{
   */
 
@@ -247,15 +245,14 @@ void DSP_DSPToRISCInterruptCmd(uint16_t Interrupt, FlagStatus NewStatus)
     MDR_DSP_IRQ->DIR = Interrupt | ((NewStatus == SET) << DSP_CORE_DIR_SNR_Pos);
 }
 
-/** @} */ /* End of group DSP_Private_Functions */
+/** @} */ /* End of group DSP_Exported_Functions */
 
 /** @} */ /* End of group DSP */
 #endif /* #if defined (USE_MDR32FG16S1QI) */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_dsp.c */
-
 

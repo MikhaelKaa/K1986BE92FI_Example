@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_power.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    17/03/2022
+  * @version V2.2.1i
+  * @date    24/07/2024
   * @brief   This file contains all the POWER firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -34,10 +34,8 @@
   * @{
   */
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /* POWER registers bit address in the alias region */
-#define PERIPH_BASE                 0x40000000
-#define PERIPH_BB_BASE              0x42000000
 #define POWER_OFFSET                (MDR_POWER_BASE - PERIPH_BASE)
 #define BKP_OFFSET                  (MDR_BKP_BASE - PERIPH_BASE)
 
@@ -51,7 +49,7 @@
 #define BKP_FPOR_BB                 BKP_BB(REG_0E, BKP_REG_0E_FPOR_Pos)
 #define BKP_STANDBY_BB              BKP_BB(REG_0F, BKP_REG_0F_STANDBY_Pos)
 
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /* --------------------- POWER registers bit mask ------------------------ */
 
@@ -62,7 +60,7 @@
 /** @} */ /* End of group POWER_Private_Defines */
 
 
-/** @defgroup POWER_Private_Functions POWER Private Functions
+/** @defgroup POWER_Exported_Functions POWER Exported Functions
   * @{
   */
 
@@ -74,11 +72,14 @@
 void POWER_DeInit(void)
 {
     MDR_POWER->PVDCS = (uint32_t)0x00000000;
+    MDR_POWER->PVDCS = (uint32_t)0x00000000;
 }
 
 
 /**
-  * @brief  Enables or disables the Power Voltage Detectors (PVD, PVBD).
+  * @brief  Enables or disables the Power Voltage Detectors:
+  *             - PVD, PVBD for MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI;
+  *             - PVD for MDR32F1QI, K1986VE1xI.
   * @param  NewState - @ref FunctionalState - new state of the PVDs.
   * @retval None
   */
@@ -87,9 +88,9 @@ void POWER_PVDenable(FunctionalState NewState)
     /* Check the parameters */
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     *(__IO uint32_t *) POWER_PVDEN_BB = (uint32_t) NewState;
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
 
     if(NewState != DISABLE)
     {
@@ -101,6 +102,29 @@ void POWER_PVDenable(FunctionalState NewState)
     }
 #endif
 }
+
+#if defined (USE_K1986VE1xI)
+/**
+  * @brief  Enables or disables the Power Voltage Battery Detector (PVBD).
+  * @note   This function can be used only for MDR32F1QI, K1986VE1xI microcontrollers.
+  * @param  NewState - @ref FunctionalState - new state of the PVBD.
+  * @retval None
+  */
+void POWER_PVBDenable(FunctionalState NewState)
+{
+    /* Check the parameters */
+    assert_param(IS_FUNCTIONAL_STATE(NewState));
+
+    if(NewState != DISABLE)
+    {
+        MDR_POWER->PVDCS |= POWER_PVDCS_PVDBEN;
+    }
+    else
+    {
+        MDR_POWER->PVDCS &= ~POWER_PVDCS_PVDBEN;
+    }
+}
+#endif
 
 /**
   * @brief  Configures the voltage threshold detected
@@ -117,9 +141,9 @@ void POWER_PVDlevelConfig(PWR_Voltage_Detector_Lvl POWER_PVDlevel)
 
     tmpreg = MDR_POWER->PVDCS;
 
-    /* Clear PLS[5:3] bits */
+    /* Clear PLS bits */
     tmpreg &= (uint32_t) ~POWER_PVDCS_PLS_Msk;
-    /* Set PLS[5:3] bits according to POWER_PVDlevel value */
+    /* Set PLS bits according to POWER_PVDlevel value */
     tmpreg |= ((uint32_t)POWER_PVDlevel & POWER_PVDCS_PLS_Msk);
 
     /* Store the new value */
@@ -140,9 +164,9 @@ void POWER_PVBDlevelConfig(PWR_Batt_Voltage_Detector_Lvl POWER_PVBDlevel)
 
     tmpreg = MDR_POWER->PVDCS;
 
-    /* Clear PBLS[2:1] bits */
+    /* Clear PBLS bits */
     tmpreg &= (uint32_t) ~POWER_PVDCS_PBLS_Msk;
-    /* Set PBLS[2:1] bits according to POWER_PVBDlevel value */
+    /* Set PBLS bits according to POWER_PVBDlevel value */
     tmpreg |= ((uint32_t)POWER_PVBDlevel & POWER_PVDCS_PBLS_Msk);
 
     /* Store the new value */
@@ -186,6 +210,7 @@ void POWER_ClearFlag(uint32_t POWER_FLAG)
     assert_param(IS_POWER_FLAGS(POWER_FLAG));
 
     MDR_POWER->PVDCS &= (uint32_t) ~POWER_FLAG;
+    MDR_POWER->PVDCS &= (uint32_t) ~POWER_FLAG;
 }
 
 /**
@@ -213,7 +238,7 @@ void POWER_PVD_ITconfig(uint32_t POWER_IT, FunctionalState NewState)
 
 /**
   * @brief  Enables or disables inversion of the specified POWER voltage detection flags
-  * @param  POWER_INV: specifies the PVD interrupts sources to be enabled or disabled.
+  * @param  POWER_INV: specifies the PVD interrupts inversion to be enabled or disabled.
   *         This parameter can be any combination of the @ref PWR_Voltage_Detector_IT_Inversion values.
   * @param  NewState - @ref FunctionalState - new state of the specified POWER voltage flag inversion.
   * @retval None
@@ -234,13 +259,13 @@ void POWER_PVD_INVconfig(uint32_t POWER_INV, FunctionalState NewState)
     }
 }
 
-/** @} */ /* End of group POWER_Private_Functions */
+/** @} */ /* End of group POWER_Exported_Functions */
 
 /** @} */ /* End of group POWER */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_power.c */
 

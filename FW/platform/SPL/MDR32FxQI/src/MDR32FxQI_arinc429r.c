@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_arinc429r.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    14/03/2022
+  * @version V2.1.0i
+  * @date    23/10/2024
   * @brief   This file contains all the ARINC429R firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -27,13 +27,13 @@
   */
 
 /** @defgroup ARINC429R ARINC429R
-  * @warning This module can be used only for microcontrollers MDR32F1QI.
+  * @warning This module can be used only for microcontrollers MDR32F1QI, K1986VE1xI.
   * @{
   */
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
 
-/** @defgroup ARINC429R_Private_Functions ARINC429R Private Functions
+/** @defgroup ARINC429R_Exported_Functions ARINC429R Exported Functions
   * @{
   */
 
@@ -63,7 +63,7 @@ void ARINC429R_BRG_Init(uint32_t ARINC429R_BRG)
     /* Set the new value of the divisor */
     tmpreg_CONTROL1 |= ((ARINC429R_BRG & 0x0F ) << ARINC429R_CONTROL1_DIV_Pos);
     tmpreg_CONTROL2 |= (((ARINC429R_BRG & 0x70) >> 4) << ARINC429R_CONTROL2_DIV_6_4_Pos);
-    
+
     /* Write the control1 and control2 ARINC register */
     MDR_ARINC429R->CONTROL1 = tmpreg_CONTROL1;
     MDR_ARINC429R->CONTROL2 = tmpreg_CONTROL2;
@@ -85,6 +85,12 @@ void ARINC429R_DeInit(void)
     MDR_ARINC429R->CONTROL5 = 0;
     MDR_ARINC429R->CHANNEL  = 0;
     MDR_ARINC429R->LABEL    = 0;
+    MDR_ARINC429R->CONTROL8 = 0;
+    MDR_ARINC429R->CONTROL9 = 0;
+#if defined (USE_K1986VE1xI) && !defined (USE_MDR32F1QI)
+    MDR_ARINC429R->CONTROL10 = 0;
+    MDR_ARINC429R->CONTROL11 = 0;
+#endif /* #if defined (USE_K1986VE1xI) && !defined (USE_MDR32F1QI) */
 }
 
 /**
@@ -143,7 +149,7 @@ void ARINC429R_ChannelInit(ARINC429R_Channel ARINC429R_CHANNELx, ARINC429R_InitC
         case ARINC429R_CHANNEL3:
         case ARINC429R_CHANNEL4:
             tmpreg_CONTROL4 = MDR_ARINC429R->CONTROL4;
-            tmpreg_CONTROL4 &= ~(0xFF << (ARINC429R_CHANNELx * 8));
+            tmpreg_CONTROL4 &= ~(0xFFUL << (ARINC429R_CHANNELx * 8));
             tmpreg_CONTROL4 |= ARINC429R_InitChannelStruct->ARINC429R_DIV << (ARINC429R_CHANNELx * 8);
             MDR_ARINC429R->CONTROL4 = tmpreg_CONTROL4;
             break;
@@ -152,7 +158,7 @@ void ARINC429R_ChannelInit(ARINC429R_Channel ARINC429R_CHANNELx, ARINC429R_InitC
         case ARINC429R_CHANNEL7:
         case ARINC429R_CHANNEL8:
             tmpreg_CONTROL5 = MDR_ARINC429R->CONTROL5;
-            tmpreg_CONTROL5 &= ~(0xFF << ((ARINC429R_CHANNELx - ARINC429R_CHANNEL5) * 8));
+            tmpreg_CONTROL5 &= ~(0xFFUL << ((ARINC429R_CHANNELx - ARINC429R_CHANNEL5) * 8));
             tmpreg_CONTROL5 |= ARINC429R_InitChannelStruct->ARINC429R_DIV << ((ARINC429R_CHANNELx - ARINC429R_CHANNEL5) * 8);
             MDR_ARINC429R->CONTROL5 = tmpreg_CONTROL5;
             break;
@@ -185,13 +191,13 @@ void ARINC429R_ChannelCmd(ARINC429R_Channel ARINC429R_CHANNELx, FunctionalState 
 
 /**
   * @brief  Enables or disables the specified ARINC429R interrupts.
-  * @param  ARINC429R_IT - @ref ARINC429R_IT_Def - specifies the ARINC429R
-  *         interrupt sources to be enabled or disabled.
+  * @param  ARINC429R_IT: specifies the ARINC429R interrupt sources to be enabled or disabled.
+  *         This parameter can be any combination of @ref ARINC429R_IT_Def values.
   * @param  NewState - @ref FunctionalState - new state of the specified
   *         ARINC429R interrupts.
   * @retval None
   */
-void ARINC429R_ITConfig(ARINC429R_IT_Def ARINC429R_IT, FunctionalState NewState)
+void ARINC429R_ITConfig(uint32_t ARINC429R_IT, FunctionalState NewState)
 {
     /* Check the parameters */
     assert_param(IS_ARINC429R_IT(ARINC429R_IT));
@@ -341,16 +347,15 @@ uint32_t ARINC429R_ReceiveData(void)
     return (MDR_ARINC429R->DATA_R);
 }
 
-/** @} */ /* End of group ARINC429R_Private_Functions */
+/** @} */ /* End of group ARINC429R_Exported_Functions */
 
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
 /** @} */ /* End of group ARINC429R */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_arinc429r.c */
-
 

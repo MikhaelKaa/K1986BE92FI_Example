@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_eth.h
   * @author  Milandr Application Team
-  * @version V2.0.0i
-  * @date    10/03/2022
+  * @version V2.1.1i
+  * @date    23/07/2024
   * @brief   This file contains all the functions prototypes for the ETHERNET
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -35,7 +35,7 @@ extern "C" {
   * @{
   */
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
 /** @addtogroup ETHERNET
   * @{
   */
@@ -59,9 +59,7 @@ typedef enum
     ETH_PHY_MODE_AutoNegotiation                       = (uint32_t)(0x7 << ETH_PHY_CONTROL_MODE_Pos)
 } ETH_PHY_MODE;
 
-#define ETH_PHY_MODE_MASK            (uint32_t)(0x7 << ETH_PHY_CONTROL_MODE_Pos)
-
-#define IS_ETH_PHY_MODE(MODE)        (((MODE) & (~ETH_PHY_MODE_MASK)) == 0)
+#define IS_ETH_PHY_MODE(MODE)        (((MODE) & (~ETH_PHY_CONTROL_MODE_Msk)) == 0)
 
 /**
   * @brief ETHERNET PHY Interface
@@ -85,9 +83,9 @@ typedef enum
     ETH_DBG_MODE_STOP     = (uint32_t)(0x3 << ETH_G_CFGh_DBG_MODE_Pos)
 } ETH_DBG_MODE;
 
-#define IS_ETH_DBG_MODE(MODE)   ((MODE == ETH_DBG_MODE_FREE_RUN) | \
-                                 (MODE == ETH_DBG_MODE_HALT)     | \
-                                 (MODE == ETH_DBG_MODE_STOP))
+#define IS_ETH_DBG_MODE(MODE)   (((MODE) == ETH_DBG_MODE_FREE_RUN) | \
+                                 ((MODE) == ETH_DBG_MODE_HALT)     | \
+                                 ((MODE) == ETH_DBG_MODE_STOP))
 
 /**
   * @brief ETHERNET Buffer Mode
@@ -99,9 +97,9 @@ typedef enum
     ETH_BUFFER_MODE_FIFO                      = (uint32_t) (0x2 << ETH_G_CFGl_BUFF_MODE_Pos)
 } ETH_BUFFER_MODE;
 
-#define IS_ETH_BUFFER_MODE(MODE)  ((MODE == ETH_BUFFER_MODE_LINEAR)                    | \
-                                   (MODE == ETH_BUFFER_MODE_AUTOMATIC_CHANGE_POINTERS) | \
-                                   (MODE == ETH_BUFFER_MODE_FIFO))
+#define IS_ETH_BUFFER_MODE(MODE)  (((MODE) == ETH_BUFFER_MODE_LINEAR)                    | \
+                                   ((MODE) == ETH_BUFFER_MODE_AUTOMATIC_CHANGE_POINTERS) | \
+                                   ((MODE) == ETH_BUFFER_MODE_FIFO))
 
 /**
   * @brief ETHERNET Transmitter bits order
@@ -112,8 +110,8 @@ typedef enum
     ETH_TRANSMITTER_BITS_ORDER_MSB = (uint32_t)(1 << ETH_X_CFG_MSB1st_Pos)
 } ETH_TRANSMITTER_BITS_ORDER;
 
-#define IS_ETH_TRANSMITTER_BITS_ORDER(ORDER)  ((ORDER == ETH_TRANSMITTER_BITS_ORDER_LSB ) || \
-                                               (ORDER == ETH_TRANSMITTER_BITS_ORDER_MSB))
+#define IS_ETH_TRANSMITTER_BITS_ORDER(ORDER)  (((ORDER) == ETH_TRANSMITTER_BITS_ORDER_LSB ) || \
+                                               ((ORDER) == ETH_TRANSMITTER_BITS_ORDER_MSB))
 
 /**
   * @brief ETHERNET Transmitter Endain (little endian or big endian)
@@ -124,8 +122,8 @@ typedef enum
     ETH_TRANSMITTER_BE_BIG_ENDIAN    = (uint32_t)(0x1 << ETH_X_CFG_BE_Pos)
 } ETH_TRANSMITTER_BE;
 
-#define IS_ETH_TRANSMITTER_BE(BE)   ((BE == ETH_TRANSMITTER_BE_LITTLE_ENDIAN) | \
-                                     (BE == ETH_TRANSMITTER_BE_BIG_ENDIAN))
+#define IS_ETH_TRANSMITTER_BE(BE)   (((BE) == ETH_TRANSMITTER_BE_LITTLE_ENDIAN) | \
+                                     ((BE) == ETH_TRANSMITTER_BE_BIG_ENDIAN))
 
 /**
   * @brief ETHERNET Transmitter Event Mode
@@ -144,7 +142,7 @@ typedef enum
 
 #define ETH_TRANSMITTER_EVENT_MODE_MASK      (uint32_t)(0x7 << ETH_X_CFG_EVNT_MODE_Pos)
 
-#define IS_ETH_TRANSMITTER_EVENT_MODE(MODE)  ((MODE & (~ETH_TRANSMITTER_EVENT_MODE_MASK)) == 0)
+#define IS_ETH_TRANSMITTER_EVENT_MODE(MODE)  (((MODE) & (~ETH_TRANSMITTER_EVENT_MODE_MASK)) == 0)
 
 /**
   * @brief ETHERNET Receiver Endain (little endian or big endian)
@@ -155,8 +153,8 @@ typedef enum
     ETH_RECEIVER_BE_BIG_ENDIAN    = (uint32_t)(0x1 << ETH_R_CFG_BE_Pos)
 } ETH_RECEIVER_BE;
 
-#define IS_ETH_RECEIVER_BE(BE)  ((BE == ETH_RECEIVER_BE_LITTLE_ENDIAN) | \
-                                 (BE == ETH_RECEIVER_BE_BIG_ENDIAN))
+#define IS_ETH_RECEIVER_BE(BE)  (((BE) == ETH_RECEIVER_BE_LITTLE_ENDIAN) | \
+                                 ((BE) == ETH_RECEIVER_BE_BIG_ENDIAN))
 
 /**
   * @brief ETHERNET Receiver bits order
@@ -167,8 +165,8 @@ typedef enum
     ETH_RECEIVER_BITS_ORDER_MSB = (uint32_t)(0 << ETH_R_CFG_MSB1st_Pos)
 } ETH_RECEIVER_BITS_ORDER;
 
-#define IS_ETH_RECEIVER_BITS_ORDER(ORDER)   ((ORDER == ETH_RECEIVER_BITS_ORDER_LSB ) || \
-                                             (ORDER == ETH_RECEIVER_BITS_ORDER_MSB))
+#define IS_ETH_RECEIVER_BITS_ORDER(ORDER)   (((ORDER) == ETH_RECEIVER_BITS_ORDER_LSB ) || \
+                                             ((ORDER) == ETH_RECEIVER_BITS_ORDER_MSB))
 
 /**
   * @brief ETHERNET Receiver Event Mode
@@ -187,7 +185,7 @@ typedef enum
 
 #define ETH_RECEIVER_EVENT_MODE_MASK                        (uint32_t)(0x7 << ETH_R_CFG_EVNT_MODE_Pos)
 
-#define IS_ETH_RECEIVER_EVENT_MODE(MODE)                    ((MODE & (~ETH_RECEIVER_EVENT_MODE_MASK)) == 0)
+#define IS_ETH_RECEIVER_EVENT_MODE(MODE)                    (((MODE) & (~ETH_RECEIVER_EVENT_MODE_MASK)) == 0)
 
 /**
   * @brief ETHERNET Interrupt defintions
@@ -211,7 +209,7 @@ typedef enum
     ETH_MAC_IT_RF_OK    = (uint32_t)(0x00000001)
 } ETH_IT_Def;
 
-#define IS_ETH_MAC_IT(IT) ((IT & 0xFFFF2000) == 0)
+#define IS_ETH_MAC_IT(IT) (((IT) & 0xFFFF2000) == 0)
 
 /**
   * @brief ETHERNET Flags
@@ -230,8 +228,8 @@ typedef enum
     ETH_MAC_FLAG_X_FULL   = ((uint32_t)0x00001000)
 } ETH_MAC_FLAGx;
 
-#define IS_ETH_MAC_FLAG(FLAG)   (((FLAG & 0xFFFFE0E0) == 0) | \
-                                (!(FLAG == 0)))
+#define IS_ETH_MAC_FLAG(FLAG)   ((((FLAG) & 0xFFFFE0E0) == 0) | \
+                                (!((FLAG) == 0)))
 
 /**
   * @brief ETHERNET Clock Source
@@ -244,10 +242,10 @@ typedef enum
     ETH_PHY_CLOCK_SOURCE_HSE2     = (uint32_t)(0x30000000)
 } ETH_Clock_Source;
 
-#define IS_ETH_CLOCK_SOURCE(CLOCK_SOURCE)   ((CLOCK_SOURCE == ETH_PHY_CLOCK_SOURCE_HSI)      | \
-                                             (CLOCK_SOURCE == ETH_PHY_CLOCK_SOURCE_HSE)      | \
-                                             (CLOCK_SOURCE == ETH_PHY_CLOCK_SOURCE_PLLCPU_0) | \
-                                             (CLOCK_SOURCE == ETH_PHY_CLOCK_SOURCE_HSE2))
+#define IS_ETH_CLOCK_SOURCE(CLOCK_SOURCE)   (((CLOCK_SOURCE) == ETH_PHY_CLOCK_SOURCE_HSI)      | \
+                                             ((CLOCK_SOURCE) == ETH_PHY_CLOCK_SOURCE_HSE)      | \
+                                             ((CLOCK_SOURCE) == ETH_PHY_CLOCK_SOURCE_PLLCPU_0) | \
+                                             ((CLOCK_SOURCE) == ETH_PHY_CLOCK_SOURCE_HSE2))
 
 /**
   * @brief ETHERNET Clock BRG
@@ -264,7 +262,7 @@ typedef enum
     ETH_HCLKdiv128 = ((uint32_t)0x07)
 } ETH_Clock_BRG;
 
-#define IS_ETH_CLOCK_BRG(BRG)   (((BRG) >= 0) && ((BRG) <= 7))
+#define IS_ETH_CLOCK_BRG(BRG)   (((BRG) & ~0x7) == 0)
 
 /**
   * @brief ETHERNET PHY Clock HCLKdiv
@@ -281,7 +279,7 @@ typedef enum
     ETH_PHY_HCLKdiv128 = ((uint32_t)0x07 << RST_CLK_ETH_CLOCK_PHY_BRG_Pos)
 } ETH_PHY_Clock_HCLKdiv;
 
-#define IS_ETH_PHY_HCLKdiv(BRG)   (((~BRG) & 0x00070000) == 0)
+#define IS_ETH_PHY_HCLKdiv(BRG)   (((BRG) & ~0x00070000UL) == 0)
 
 /**
   * @brief ETHERNET Clock Number
@@ -292,8 +290,8 @@ typedef enum
     ETH_CLK2 = ((uint32_t)0x40000000)
 } ETH_Clock_Number;
 
-#define IS_ETH_CLK(ETH_CLK) ((ETH_CLK == ETH_CLK1) || \
-                             (ETH_CLK == ETH_CLK2))
+#define IS_ETH_CLK(ETH_CLK) (((ETH_CLK) == ETH_CLK1) || \
+                             ((ETH_CLK) == ETH_CLK2))
 
 /**--------------------------------------------------------------------------**/
 /**
@@ -318,16 +316,16 @@ typedef enum
     ETH_PHY_FLAG_100MBIT       = ((uint32_t)0x00000001)
 } ETH_PHY_FLAGx;
 
-#define IS_ETH_PHY_FLAG(FLAG)   ((FLAG == ETH_PHY_FLAG_MDINT)         || \
-                                 (FLAG == ETH_PHY_FLAG_MDO)           || \
-                                 (FLAG == ETH_PHY_FLAG_FX_VALID)      || \
-                                 (FLAG == ETH_PHY_FLAG_COL)           || \
-                                 (FLAG == ETH_PHY_FLAG_CRS)           || \
-                                 (FLAG == ETH_PHY_FLAG_READY)         || \
-                                 (FLAG == ETH_PHY_FLAG_FULL_DUPLEX)   || \
-                                 (FLAG == ETH_PHY_FLAG_CARRIER_SENSE) || \
-                                 (FLAG == ETH_PHY_FLAG_LINK)          || \
-                                 (FLAG == ETH_PHY_FLAG_100MBIT))
+#define IS_ETH_PHY_FLAG(FLAG)   (((FLAG) == ETH_PHY_FLAG_MDINT)         || \
+                                 ((FLAG) == ETH_PHY_FLAG_MDO)           || \
+                                 ((FLAG) == ETH_PHY_FLAG_FX_VALID)      || \
+                                 ((FLAG) == ETH_PHY_FLAG_COL)           || \
+                                 ((FLAG) == ETH_PHY_FLAG_CRS)           || \
+                                 ((FLAG) == ETH_PHY_FLAG_READY)         || \
+                                 ((FLAG) == ETH_PHY_FLAG_FULL_DUPLEX)   || \
+                                 ((FLAG) == ETH_PHY_FLAG_CARRIER_SENSE) || \
+                                 ((FLAG) == ETH_PHY_FLAG_LINK)          || \
+                                 ((FLAG) == ETH_PHY_FLAG_100MBIT))
 
 /**
   * @brief ETHERNET PHY Register address
@@ -347,9 +345,32 @@ typedef enum
     PHY_ECTR     = 31
 } ETH_PHY_Reg_Addr;
 
-#define IS_ETH_PHYReg(PHYreg)   (((PHYreg >= 0 ) && (PHYreg <= 6))  || \
-                                  (PHYreg == 18) || (PHYreg == 29)  || \
-                                  (PHYreg == 30) || (PHYreg == 31))
+#define IS_ETH_PHYReg(PHYreg)   ((PHYreg <= 6UL)  || \
+                                 (PHYreg == 18UL) || (PHYreg == 29UL)  || \
+                                 (PHYreg == 30UL) || (PHYreg == 31UL))
+
+/**
+ * @brief ETHERNET MDIO MDC prescaler
+ */
+typedef enum {
+    ETH_MDIO_MDC_PRESCALER_DIV_16  = ((uint32_t)0x00 << ETH_MDIO_CTRL_DIV_Pos), /*!< Selects ETH_CLK divided by 16 to generate the MDC clock */
+    ETH_MDIO_MDC_PRESCALER_DIV_32  = ((uint32_t)0x01 << ETH_MDIO_CTRL_DIV_Pos), /*!< Selects ETH_CLK divided by 32 to generate the MDC clock */
+    ETH_MDIO_MDC_PRESCALER_DIV_48  = ((uint32_t)0x02 << ETH_MDIO_CTRL_DIV_Pos), /*!< Selects ETH_CLK divided by 48 to generate the MDC clock */
+    ETH_MDIO_MDC_PRESCALER_DIV_64  = ((uint32_t)0x03 << ETH_MDIO_CTRL_DIV_Pos), /*!< Selects ETH_CLK divided by 64 to generate the MDC clock */
+    ETH_MDIO_MDC_PRESCALER_DIV_80  = ((uint32_t)0x04 << ETH_MDIO_CTRL_DIV_Pos), /*!< Selects ETH_CLK divided by 80 to generate the MDC clock */
+    ETH_MDIO_MDC_PRESCALER_DIV_96  = ((uint32_t)0x05 << ETH_MDIO_CTRL_DIV_Pos), /*!< Selects ETH_CLK divided by 96 to generate the MDC clock */
+    ETH_MDIO_MDC_PRESCALER_DIV_112 = ((uint32_t)0x06 << ETH_MDIO_CTRL_DIV_Pos), /*!< Selects ETH_CLK divided by 112 to generate the MDC clock */
+    ETH_MDIO_MDC_PRESCALER_DIV_128 = ((uint32_t)0x07 << ETH_MDIO_CTRL_DIV_Pos)  /*!< Selects ETH_CLK divided by 128 to generate the MDC clock */
+} ETH_MDIO_MDC_PRESCALER;
+
+#define IS_ETH_MDIO_MDC_PRESCALER(VALUE) (((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_16 ) || \
+                                          ((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_32 ) || \
+                                          ((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_48 ) || \
+                                          ((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_64 ) || \
+                                          ((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_80 ) || \
+                                          ((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_96 ) || \
+                                          ((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_112) || \
+                                          ((VALUE) == ETH_MDIO_MDC_PRESCALER_DIV_128))
 
 /**
   * @brief ETHERNET Init Structure definition
@@ -368,6 +389,11 @@ typedef struct
                                                                     This parameter can be a value of @ref ETH_PHY_MODE. */
     ETH_PHY_INTERFACE          ETH_PHY_Interface;              /*!< Selects the PHY interface.
                                                                     This parameter can be a value of @ref ETH_PHY_INTERFACE. */
+    /**
+      * @brief MDIO
+      */
+    ETH_MDIO_MDC_PRESCALER     ETH_MDIO_MDC_Prescaler;         /*!< Specifies the MDC Prescaler configuration (MDC = ETH_CLK / ETH_MDIO_MDC_Prescaler).
+                                                                    This parameter can be a value of @ref ETH_MDIO_MDC_PRESCALER */
     /**
       * @brief MAC General Config
       */
@@ -517,8 +543,8 @@ typedef union
 
 
 /** @defgroup ETH_Exported_Functions ETHERNET Exported Functions
- *     @{
- */
+  * @{
+  */
 
 void ETH_ClockDeInit(void);
 void ETH_PHY_ClockConfig(ETH_Clock_Source clock_source, ETH_PHY_Clock_HCLKdiv PHY_HCLKdiv);
@@ -539,19 +565,24 @@ void ETH_MACITConfig(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t ETH_MAC_IT, Func
 void ETH_MACAddressConfig(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t *MacAddr);
 void ETH_GetMACAddress(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t *Addr);
 FlagStatus ETH_GetPHYStatus(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t ETH_PHY_FLAG);
+FlagStatus ETH_GetPHYAutonegStatus(MDR_ETHERNET_TypeDef * ETHERNETx);
 uint16_t ETH_ReadPHYRegister(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t PHYAddress, ETH_PHY_Reg_Addr PHYReg);
 ErrorStatus ETH_WritePHYRegister(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t PHYAddress, ETH_PHY_Reg_Addr PHYReg, uint16_t PHYValue);
 uint32_t ETH_ReceivedFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_InputBuffer);
-void ETH_SendFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_OututBuffer, uint32_t BufLen);
+void ETH_SendFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_OutputBuffer, uint32_t BufLen);
+uint16_t ETH_GetRxFrameCount(MDR_ETHERNET_TypeDef * ETHERNETx);
+void ETH_DecrementRxFrameCount(MDR_ETHERNET_TypeDef * ETHERNETx);
+uint16_t ETH_GetTxBufferFreeSize(MDR_ETHERNET_TypeDef * ETHERNETx);
 void ETH_DMAPrepare(void);
 void ETH_DMAFrameRx(uint32_t * DstBuf, uint32_t BufferSize, uint32_t * SrcBuf);
 void ETH_DMAFrameTx(uint32_t * DstBuf, uint32_t BufferSize, uint32_t *  SrcBuf);
+void ETH_CheckMode10BaseT(MDR_ETHERNET_TypeDef * ETHERNETx);
 
 FlagStatus ETH_GetFlagStatus(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t ETH_MAC_FLAG);
 
 /** @} */ /* End of group ETH_Exported_Functions */
 
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
 /** @} */ /* End of group ETHERNET */
 
@@ -563,7 +594,7 @@ FlagStatus ETH_GetFlagStatus(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t ETH_MAC_
 
 #endif /* __MDR32FxQI_ETH_H */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_eth.h */
 

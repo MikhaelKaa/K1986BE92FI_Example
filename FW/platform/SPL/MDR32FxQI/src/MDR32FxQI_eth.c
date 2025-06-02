@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_eth.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    17/03/2022
+  * @version V2.1.2i
+  * @date    24/07/2024
   * @brief   This file contains all the ETHERNET firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -23,6 +23,7 @@
 #include "MDR32FxQI_dma.h"
 #include "MDR32FxQI_eth.h"
 #include "MDR32FxQI_rst_clk.h"
+#include "MDR32FxQI_utils.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -31,9 +32,9 @@
   * @{
   */
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
 /** @defgroup ETHERNET ETHERNET
- *  @warning This module can be used only for MCU MDR32F1QI.
+ *  @warning This module can be used only for MCU K1986VE1xI.
   * @{
   */
 
@@ -47,21 +48,31 @@ extern DMA_CtrlDataTypeDef DMA_ControlTable[DMA_Channels_Number * (1 + DMA_Alter
   * @{
   */
 
-
 #define IS_ETH_ALL_PERIPH(PERIPH)       (PERIPH == MDR_ETHERNET1)
-
 
 #define IS_ETH_PHY_ADDRESS(ADDRESS)     (((ADDRESS << ETH_PHY_CONTROL_PHYADD_Pos) & (~ETH_PHY_CONTROL_PHYADD_Msk)) == 0)
 #define IS_ETH_COL_WND(WND)             (WND <= 0xFF)
 #define IS_ETH_RETRY_COUNTER(COUNTER)   (COUNTER <= 0x0F)
 #define IS_ETH_DELIMITER(DELIMITER)     ((DELIMITER >= 0x5EA) && (DELIMITER <= 0x1A16))
 
+#define PHY_BCR_RESET_Pos               15
+#define PHY_BCR_RESET_Msk               (0x1UL << PHY_BCR_RESET_Pos)
+
+#define PHY_BCR_LOOPBACK_Pos            14
+#define PHY_BCR_LOOPBACK_Msk            (0x1UL << PHY_BCR_LOOPBACK_Pos)
+
+#define PHY_BCR_DUPLEX_MODE_Pos         8
+#define PHY_BCR_DUPLEX_MODE_Msk         (0x1UL << PHY_BCR_DUPLEX_MODE_Pos)
+
+#define PHY_BSR_AUTONEG_COMPLETE_Pos    5
+#define PHY_BSR_AUTONEG_COMPLETE_Msk    (0x1UL << PHY_BSR_AUTONEG_COMPLETE_Pos)
+
 #define ETH_BUFFER_SIZE                 ((uint32_t)0x2000)
 
 /** @} */ /* End of group ETH_Private_Defines */
 
 
-/** @defgroup ETH_Private_Functions ETH Private Functions
+/** @defgroup ETH_Exported_Functions ETHERNET Exported Functions
   * @{
   */
 
@@ -175,6 +186,9 @@ void ETH_PHY_Reset(MDR_ETHERNET_TypeDef * ETHERNETx)
 
 /**
   * @brief  Enables or disables the PHY.
+  * @note   If WORKAROUND_K1986VE1xI_ERROR_ETH_PHY_10BASE_T_DATA_INVERSION is defined
+  *         the function takes corrective action when the PHY is enable (performs a PHY
+  *         start check in 10BaseT mode), otherwise it simply enable the PHY.
   * @param  ETHERNETx: Select the ETHERNET peripheral.
   *         This parameter should be MDR_ETHERNET1.
   * @param  NewState - @ref FunctionalState - new state of the PHY.
@@ -182,19 +196,36 @@ void ETH_PHY_Reset(MDR_ETHERNET_TypeDef * ETHERNETx)
   */
 void ETH_PHYCmd(MDR_ETHERNET_TypeDef * ETHERNETx, FunctionalState NewState)
 {
+#ifdef WORKAROUND_K1986VE1xI_ERROR_ETH_PHY_10BASE_T_DATA_INVERSION
+    uint32_t tmpreg_PHY_Control_Mode;
+#endif
     /* Check the parameters */
     assert_param(IS_ETH_ALL_PERIPH(ETHERNETx));
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
     if(NewState == ENABLE)
     {
+#ifdef WORKAROUND_K1986VE1xI_ERROR_ETH_PHY_10BASE_T_DATA_INVERSION
+        tmpreg_PHY_Control_Mode = ETHERNETx->PHY_Control & ETH_PHY_CONTROL_MODE_Msk;
+
+        if(tmpreg_PHY_Control_Mode == ETH_PHY_MODE_10BaseT_Half_Duplex ||
+           tmpreg_PHY_Control_Mode == ETH_PHY_MODE_10BaseT_Full_Duplex ||
+           tmpreg_PHY_Control_Mode == ETH_PHY_MODE_AutoNegotiation)
+        {
+            ETH_CheckMode10BaseT(ETHERNETx);
+        }
+        else
+        {
+            ETHERNETx->PHY_Control |= ETH_PHY_CONTROL_nRST;
+        }
+#else
         ETHERNETx->PHY_Control |= ETH_PHY_CONTROL_nRST;
+#endif
     }
     else
     {
         ETHERNETx->PHY_Control &= ~ETH_PHY_CONTROL_nRST;
     }
-
 }
 
 /**
@@ -247,6 +278,8 @@ void ETH_StructInit(ETH_InitTypeDef * ETH_InitStruct)
     ETH_InitStruct->ETH_PHY_Mode = ETH_PHY_MODE_AutoNegotiation;
     /* Set the working interface */
     ETH_InitStruct->ETH_PHY_Interface = ETH_PHY_INTERFACE_ETHERNET_802_3;
+    /* Set the MDC prescaler */
+    ETH_InitStruct->ETH_MDIO_MDC_Prescaler = ETH_MDIO_MDC_PRESCALER_DIV_64;
 
     /* General config */
     ETH_InitStruct->ETH_Dilimiter = 0x0800;
@@ -366,6 +399,7 @@ void ETH_Init(MDR_ETHERNET_TypeDef * ETHERNETx, ETH_InitTypeDef * ETH_InitStruct
     assert_param(IS_ETH_DELIMITER(ETH_InitStruct->ETH_Dilimiter));
     assert_param(IS_ETH_PHY_ADDRESS(ETH_InitStruct->ETH_PHY_Address));
     assert_param(IS_ETH_PHY_MODE(ETH_InitStruct->ETH_PHY_Mode));
+    assert_param(IS_ETH_MDIO_MDC_PRESCALER(ETH_InitStruct->ETH_MDIO_MDC_Prescaler));
     assert_param(IS_ETH_DBG_MODE(ETH_InitStruct->ETH_DBG_Mode));
     assert_param(IS_FUNCTIONAL_STATE(ETH_InitStruct->ETH_DBG_XF));
     assert_param(IS_FUNCTIONAL_STATE(ETH_InitStruct->ETH_DBG_RF));
@@ -410,6 +444,9 @@ void ETH_Init(MDR_ETHERNET_TypeDef * ETHERNETx, ETH_InitTypeDef * ETH_InitStruct
                        | (ETH_InitStruct->ETH_PHY_Mode) | (ETH_InitStruct->ETH_PHY_Interface);
     ETHERNETx->PHY_Control |= tmpreg_PHY_Control;
 
+    /* Set the MDC prescaler */
+    ETHERNETx->ETH_MDIO_CTRL = ETH_InitStruct->ETH_MDIO_MDC_Prescaler;
+
     /* Config the G_CFGh register */
     tmpreg_G_CFGh = ETH_InitStruct->ETH_DBG_Mode| (ETH_InitStruct->ETH_DBG_XF << ETH_G_CFGh_DBG_XF_EN_Pos) |
                 (ETH_InitStruct->ETH_DBG_RF << ETH_G_CFGh_DBG_RF_EN_Pos) | (ETH_InitStruct->ETH_Loopback_Mode << ETH_G_CFGh_DLB_Pos ) |
@@ -448,7 +485,7 @@ void ETH_Init(MDR_ETHERNET_TypeDef * ETHERNETx, ETH_InitTypeDef * ETH_InitStruct
                  | (ETH_InitStruct->ETH_Receiver_Event_Mode);
 
     /* Configure the received packets */
-    tmpreg_R_CFG |= (ETH_InitStruct->ETH_Short_Frames_Reception   << ETH_R_CFG_LF_EN_Pos)
+    tmpreg_R_CFG |= (ETH_InitStruct->ETH_Short_Frames_Reception   << ETH_R_CFG_SF_EN_Pos)
               |   (ETH_InitStruct->ETH_Long_Frames_Reception      << ETH_R_CFG_LF_EN_Pos)
               |   (ETH_InitStruct->ETH_Broadcast_Frames_Reception << ETH_R_CFG_BCA_EN_Pos)
               |   (ETH_InitStruct->ETH_Error_CRC_Frames_Reception << ETH_R_CFG_EF_EN_Pos)
@@ -752,7 +789,7 @@ uint16_t ETH_ReadPHYRegister(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t PHYAddre
     tmpreg &= ETH_MDIO_CTRL_DIV_Msk;
     /* Prepare the MII address register value */
     tmpreg |= (uint32_t)(PHYAddress << 8) | (PHYReg << 0) | (1 << ETH_MDIO_CTRL_OP_Pos)
-            | (1 << ETH_MDIO_CTRL_RDY_Pos) | (1 << ETH_MDIO_CTRL_PRE_EN_Pos) | (1 << 5);
+            | (1 << ETH_MDIO_CTRL_RDY_Pos) | (1 << ETH_MDIO_CTRL_PRE_EN_Pos);
     /* Write the result value into the MDIO_CTRL register */
     ETHERNETx->ETH_MDIO_CTRL = tmpreg;
     do {
@@ -795,12 +832,12 @@ ErrorStatus ETH_WritePHYRegister(MDR_ETHERNET_TypeDef * ETHERNETx, uint16_t PHYA
     tmpreg = ETHERNETx->ETH_MDIO_CTRL;
 
     /* Keep only the CSR Clock Range CR[2:0] bits value */
-    tmpreg &= ~ETH_MDIO_CTRL_DIV_Msk;
+    tmpreg &= ETH_MDIO_CTRL_DIV_Msk;
 
     tmpreg &= ~(1 << ETH_MDIO_CTRL_OP_Pos);
 
     /* Prepare the MII address register value */
-    tmpreg |= (uint32_t)(PHYAddress << 8) | (PHYReg << 0) | (1 << ETH_MDIO_CTRL_RDY_Pos) | (1 << ETH_MDIO_CTRL_PRE_EN_Pos) | (1 << 5);
+    tmpreg |= (uint32_t)(PHYAddress << 8) | (PHYReg << 0) | (1 << ETH_MDIO_CTRL_RDY_Pos) | (1 << ETH_MDIO_CTRL_PRE_EN_Pos);
 
     /* Give the value to the MII data register */
     ETHERNETx->ETH_MDIO_DATA = PHYValue;
@@ -950,15 +987,15 @@ uint32_t ETH_ReceivedFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_Inpu
   * @brief  Send the ethernet frame.
   * @param  ETHERNETx: Select the ETHERNET peripheral.
   *         This parameter should be MDR_ETHERNET1.
-  * @param  ptr_OututBuffer: pointer to the sending frame.
-  * @param  BufLen: the size of the sending frmae.
+  * @param  ptr_OututBuffer: pointer to the sending frame (ptr_OututBuffer[0] should be a packet length field).
+  * @param  BufLen: the size of the sending frame (not including service fields - length and packet transfer state).
   * @retval None
   */
 void ETH_SendFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_OutputBuffer, uint32_t BufLen)
 {
     uint32_t BufferMode, i, Xtail, tmp;
     uint32_t * ptr_OutputFrame;
-    int32_t EthReceiverFreeBufferSize;
+    int32_t EthTransmitterFreeBufferSize;
 
     /* Check the parameters */
     assert_param(IS_ETH_ALL_PERIPH(ETHERNETx));
@@ -974,8 +1011,8 @@ void ETH_SendFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_OutputBuffer
             /* Set pointer to output buffer */
             ptr_OutputFrame = (uint32_t *)((((uint32_t)ETHERNETx) + 0x08000000) + Xtail);
             /* Send frame */
-            EthReceiverFreeBufferSize = (ETH_BUFFER_SIZE - Xtail) / 4;
-            if(((BufLen + 3) / 4 + 1) < EthReceiverFreeBufferSize)
+            EthTransmitterFreeBufferSize = (ETH_BUFFER_SIZE - Xtail) / 4;
+            if(((BufLen + 3) / 4 + 1) < EthTransmitterFreeBufferSize)
             {
                 for(i = 0; i < (BufLen + 3) / 4 + 1; i++ )
                 {
@@ -984,13 +1021,13 @@ void ETH_SendFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_OutputBuffer
             }
             else
             {
-                for( i = 0; i < EthReceiverFreeBufferSize; i++)
+                for( i = 0; i < EthTransmitterFreeBufferSize; i++)
                 {
                     *ptr_OutputFrame++ = ptr_OutputBuffer[i];
                 }
                 tmp = i;
                 ptr_OutputFrame = (uint32_t *)((((uint32_t)ETHERNETx) + 0x08000000) + ETHERNETx->ETH_Dilimiter);
-                for(i = 0; i < (((BufLen + 3) / 4 + 1) - EthReceiverFreeBufferSize); i++)
+                for(i = 0; i < (((BufLen + 3) / 4 + 1) - EthTransmitterFreeBufferSize); i++)
                 {
                     *ptr_OutputFrame++ = ptr_OutputBuffer[i+tmp];
                 }
@@ -1008,8 +1045,10 @@ void ETH_SendFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_OutputBuffer
             /* Set pointer to output buffer */
             ptr_OutputFrame = (uint32_t *)((((uint32_t)ETHERNETx) + 0x08000000) + Xtail);
             /* Send frame */
-            EthReceiverFreeBufferSize = (ETH_BUFFER_SIZE - Xtail) / 4;
-            if(((BufLen + 3) / 4 + 2) < EthReceiverFreeBufferSize)
+            EthTransmitterFreeBufferSize = (ETH_BUFFER_SIZE - Xtail) / 4;
+            /* Disable IRQ - otherwise a corrupted packet may be sent if IRQ occurs */
+            __disable_irq();
+            if(((BufLen + 3) / 4 + 2) < EthTransmitterFreeBufferSize)
             {
                 for(i = 0; i < (BufLen + 3) / 4 + 2; i++)
                 {
@@ -1018,17 +1057,18 @@ void ETH_SendFrame(MDR_ETHERNET_TypeDef * ETHERNETx, uint32_t * ptr_OutputBuffer
             }
             else
             {
-                for( i = 0; i < EthReceiverFreeBufferSize; i++ )
+                for( i = 0; i < EthTransmitterFreeBufferSize; i++ )
                 {
                     *ptr_OutputFrame++ = ptr_OutputBuffer[i];
                 }
                 tmp = i;
                 ptr_OutputFrame = (uint32_t *)((((uint32_t)ETHERNETx) + 0x08000000) + ETHERNETx->ETH_Dilimiter);
-                for(i = 0; i < (((BufLen + 3) / 4 + 2) - EthReceiverFreeBufferSize); i++)
+                for(i = 0; i < (((BufLen + 3) / 4 + 2) - EthTransmitterFreeBufferSize); i++)
                 {
                     *ptr_OutputFrame++ = ptr_OutputBuffer[i+tmp];
                 }
             }
+            __enable_irq();
             break;
         case ETH_BUFFER_MODE_FIFO:
             /* Set the pointer to input frame */
@@ -1080,11 +1120,11 @@ void ETH_DMAFrameRx(uint32_t * DstBuf, uint32_t BufferSize, uint32_t * SrcBuf)
     MDR_DMA->CHNL_PRIORITY_SET |= (1 << DMA_Channel_SW1);
     DMA_ControlTable[DMA_Channel_SW1].DMA_SourceEndAddr = (uint32_t)SrcBuf;
     DMA_ControlTable[DMA_Channel_SW1].DMA_DestEndAddr = ((uint32_t)DstBuf) + 4 * (BufferSize - 1);
-    DMA_ControlTable[DMA_Channel_SW1].DMA_Control = DMA_DestIncWord
-                                                  | DMA_SourceIncNo
-                                                  | DMA_MemoryDataSize_Word
-                                                  | DMA_Mode_AutoRequest
-                                                  | DMA_Transfers_1024
+    DMA_ControlTable[DMA_Channel_SW1].DMA_Control = ((uint32_t)DMA_DestIncWord << 30)
+                                                  | ((uint32_t)DMA_SourceIncNo << 26)
+                                                  | ((uint32_t)DMA_MemoryDataSize_Word)
+                                                  | ((uint32_t)DMA_Mode_AutoRequest)
+                                                  | ((uint32_t)DMA_Transfers_1024)
                                                   | ((BufferSize - 1) << 4);
 
     /* Run channel */
@@ -1124,11 +1164,11 @@ void ETH_DMAFrameTx(uint32_t * DstBuf, uint32_t BufferSize, uint32_t * SrcBuf)
 
     DMA_ControlTable[DMA_Channel_SW2].DMA_SourceEndAddr = (uint32_t)SrcBuf + 4 * (BufferSize - 1);
     DMA_ControlTable[DMA_Channel_SW2].DMA_DestEndAddr = (uint32_t)DstBuf;
-    DMA_ControlTable[DMA_Channel_SW2].DMA_Control = DMA_DestIncNo
-                                                  | DMA_SourceIncWord
-                                                  | DMA_MemoryDataSize_Word
-                                                  | DMA_Mode_AutoRequest
-                                                  | DMA_Transfers_1024
+    DMA_ControlTable[DMA_Channel_SW2].DMA_Control = ((uint32_t)DMA_DestIncNo << 30)
+                                                  | ((uint32_t)DMA_SourceIncWord << 26)
+                                                  | ((uint32_t)DMA_MemoryDataSize_Word)
+                                                  | ((uint32_t)DMA_Mode_AutoRequest)
+                                                  | ((uint32_t)DMA_Transfers_1024)
                                                   | ((BufferSize - 1) << 4);
 
     /* Run channel */
@@ -1152,15 +1192,216 @@ void ETH_DMAFrameTx(uint32_t * DstBuf, uint32_t BufferSize, uint32_t * SrcBuf)
     DMA_Cmd(DMA_Channel_SW2, DISABLE);
 }
 
-/** @} */ /* End of group ETH_Private_Functions */
+/**
+  * @brief  Performs validation of PHY startup in 10BaseT mode.
+  * @param  ETHERNETx: Select the ETHERNET peripheral.
+  *         This parameter should be MDR_ETHERNET1.
+  * @retval None
+  */
+void ETH_CheckMode10BaseT(MDR_ETHERNET_TypeDef * ETHERNETx)
+{
+    uint32_t tmpreg_R_CFG, tmpreg_X_CFG, tmpreg_G_CFGh, tmpreg_G_CFGl, tmpreg_Dilimiter, tmpreg_PHY_BCR;
+    uint32_t ETH_TxPacket[16], ETH_RxPacket[16], PHY_Addr, i;
+    ETH_StatusPacketReceptionTypeDef ETH_StatusRxPacket;
+    uint32_t DelayConstUs;
 
-#endif /* #if defined (USE_MDR32F1QI) */
+    /* Check the parameters */
+    assert_param(IS_ETH_ALL_PERIPH(ETHERNETx));
+
+    SystemCoreClockUpdate();
+    DelayConstUs = DELAY_PROGRAM_GET_CONST_US(SystemCoreClock);
+
+    /* Get PHY address */
+    PHY_Addr = (ETHERNETx->PHY_Control & ETH_PHY_CONTROL_PHYADD_Msk) >> ETH_PHY_CONTROL_PHYADD_Pos;
+
+    /* Save ETH MAC registers */
+    tmpreg_Dilimiter = ETHERNETx->ETH_Dilimiter;
+    tmpreg_G_CFGl    = ETHERNETx->ETH_G_CFGl;
+    tmpreg_G_CFGh    = ETHERNETx->ETH_G_CFGh;
+    tmpreg_X_CFG     = ETHERNETx->ETH_X_CFG;
+    tmpreg_R_CFG     = ETHERNETx->ETH_R_CFG;
+
+    while(1)
+    {
+        /* Set MAC settings */
+        ETHERNETx->ETH_X_CFG        = ETH_X_CFG_PAD_EN | ETH_X_CFG_PRE_EN | ETH_X_CFG_CRC_EN | ETH_X_CFG_IPG_EN;
+        ETHERNETx->ETH_R_CFG        = ETH_R_CFG_SF_EN | ETH_R_CFG_EF_EN | ETH_R_CFG_AC_EN;
+        ETHERNETx->ETH_Dilimiter    = 0x1000;
+#if defined (USE_MDR32F1QI_REV3_4)
+        ETHERNETx->ETH_R_Head       = 0x0000;
+        ETHERNETx->ETH_X_Tail       = 0x1000;
+#endif
+        ETHERNETx->ETH_G_CFGl       = 0x0000;
+        ETHERNETx->ETH_G_CFGh       = ETH_G_CFGh_RRST | ETH_G_CFGh_XRST;
+
+        /* Hardware Reset ETH PHY */
+        ETHERNETx->PHY_Control &= ~ETH_PHY_CONTROL_nRST;
+        DELAY_PROGRAM_WaitLoopsAsm(DELAY_PROGRAM_GET_US_LOOPS(100, DelayConstUs)); /* Wait for 100 us */
+        ETHERNETx->PHY_Control |= ETH_PHY_CONTROL_nRST;
+        DELAY_PROGRAM_WaitLoopsAsm(DELAY_PROGRAM_GET_US_LOOPS(16000, DelayConstUs)); /* Wait for 16 ms */
+        /* Wait until the ETH PHY unit did not come out in the state after a hard reset */
+        while(ETH_GetPHYStatus(ETHERNETx, ETH_PHY_FLAG_READY) != SET){}
+        /* Save PHY_BCR register */
+        tmpreg_PHY_BCR = ETH_ReadPHYRegister(ETHERNETx, PHY_Addr, PHY_BCR);
+
+        /* Software Reset ETH PHY */
+        ETH_WritePHYRegister(ETHERNETx, PHY_Addr, PHY_BCR, (PHY_BCR_RESET_Msk | tmpreg_PHY_BCR));
+        /* Wait until the ETH PHY unit did not come out in the state after a soft reset */
+        while(ETH_ReadPHYRegister(ETHERNETx, PHY_Addr, PHY_BCR) & PHY_BCR_RESET_Msk){}
+        /* Set 10BaseT FD and Loopback*/
+        ETH_WritePHYRegister(ETHERNETx, PHY_Addr, PHY_BCR, PHY_BCR_LOOPBACK_Msk | PHY_BCR_DUPLEX_MODE_Msk);
+
+        /* MAC Start */
+        ETHERNETx->ETH_G_CFGh &= ~(ETH_G_CFGh_RRST | ETH_G_CFGh_XRST);
+        ETHERNETx->ETH_X_CFG |= ETH_X_CFG_EN;
+        ETHERNETx->ETH_R_CFG |= ETH_R_CFG_EN;
+
+        /* Send test packets */
+        ETH_TxPacket[0] = 60;
+        ETH_TxPacket[1] = 0xFFFFFFFF;
+        ETH_TxPacket[2] = 0xAA55FFFF;
+        for(i = 3; i < 16; i++)
+        {
+            ETH_TxPacket[i] = 0xAA55AA55;
+        }
+
+        ETH_SendFrame(ETHERNETx, ETH_TxPacket, ETH_TxPacket[0]);
+        ETH_SendFrame(ETHERNETx, ETH_TxPacket, ETH_TxPacket[0]);
+
+        /* Receive packet */
+        while(((ETHERNETx->ETH_STAT & ETH_STAT_R_COUNT_Msk) >> ETH_STAT_R_COUNT_Pos) == 0x00){}
+        ETH_StatusRxPacket.Status = ETH_ReceivedFrame(ETHERNETx, ETH_RxPacket);
+
+        /* Check receive status */
+        if(!(ETH_StatusRxPacket.Fields.CRC_ERR || ETH_StatusRxPacket.Fields.SF_ERR))
+        {
+            break;
+        }
+    }
+
+    /* Disable and reset ETH MAC */
+    ETHERNETx->ETH_X_CFG  = 0x0000;
+    ETHERNETx->ETH_R_CFG  = 0x0000;
+    ETHERNETx->ETH_G_CFGh = ETH_G_CFGh_RRST | ETH_G_CFGh_XRST;
+    
+    /* Restore ETH PHY registers */
+    ETH_WritePHYRegister(ETHERNETx, PHY_Addr, PHY_BCR, tmpreg_PHY_BCR);
+
+    /* Restore ETH MAC registers */
+    ETHERNETx->ETH_Dilimiter = tmpreg_Dilimiter;
+#if defined (USE_MDR32F1QI_REV3_4)
+    ETHERNETx->ETH_R_Head    = 0x0000;
+    ETHERNETx->ETH_X_Tail    = tmpreg_Dilimiter;
+#endif
+    ETHERNETx->ETH_X_CFG     = tmpreg_X_CFG;
+    ETHERNETx->ETH_R_CFG     = tmpreg_R_CFG;
+    
+    ETHERNETx->ETH_G_CFGl    = tmpreg_G_CFGl;
+    ETHERNETx->ETH_G_CFGh    = ETH_G_CFGh_RRST | ETH_G_CFGh_XRST;
+    ETHERNETx->ETH_G_CFGh    = tmpreg_G_CFGh;
+}
+
+/**
+  * @brief  Get the number of received packets that were not read.
+  * @param  ETHERNETx: Select the ETHERNET peripheral.
+  *         This parameter should be MDR_ETHERNET1.
+  * @retval Number of unread packets:
+  *             0-6: in the receiver buffer 0-6 unread packets;
+  *             7:   in the receiver buffer 7 or more unread packets.
+  */
+uint16_t ETH_GetRxFrameCount(MDR_ETHERNET_TypeDef * ETHERNETx)
+{
+    /* Check the parameters */
+    assert_param(IS_ETH_ALL_PERIPH(ETHERNETx));
+    
+    return ((ETHERNETx->ETH_STAT & ETH_STAT_R_COUNT_Msk) >> ETH_STAT_R_COUNT_Pos);
+}
+
+/**
+  * @brief  Decrements by 1 the counter of received packets that were not read.
+  * @param  ETHERNETx: Select the ETHERNET peripheral.
+  *         This parameter should be MDR_ETHERNET1.
+  * @retval None.
+  */
+void ETH_DecrementRxFrameCount(MDR_ETHERNET_TypeDef * ETHERNETx)
+{
+    /* Check the parameters */
+    assert_param(IS_ETH_ALL_PERIPH(ETHERNETx));
+    
+    ETHERNETx->ETH_STAT = 0x0000;
+}
+
+/**
+  * @brief  Checks whether the PHY autonegotiation process is completed or not.
+  * @param  ETHERNETx: Select the ETHERNET peripheral.
+  *         This parameter should be MDR_ETHERNET1.
+  * @retval @ref FlagStatus - The autonegotiation completion status (SET or RESET).
+  */
+FlagStatus ETH_GetPHYAutonegStatus(MDR_ETHERNET_TypeDef * ETHERNETx)
+{
+    FlagStatus bitstatus;
+    uint32_t tmpreg_PHY_BSR, PHY_Addr;
+
+    /* Check the parameters */
+    assert_param(IS_ETH_ALL_PERIPH(ETHERNETx));
+
+    /* Get PHY address */
+    PHY_Addr = (ETHERNETx->PHY_Control & ETH_PHY_CONTROL_PHYADD_Msk) >> ETH_PHY_CONTROL_PHYADD_Pos;
+
+    /* Read PHY Basic Status Register */
+    tmpreg_PHY_BSR = ETH_ReadPHYRegister(ETHERNETx, PHY_Addr, PHY_BSR);
+
+    if(tmpreg_PHY_BSR & PHY_BSR_AUTONEG_COMPLETE_Msk)
+    {
+        bitstatus = SET;
+    }
+    else
+    {
+        bitstatus = RESET;
+    }
+
+    return (bitstatus);
+}
+
+/**
+  * @brief  Get free space in transmitter buffer.
+  * @param  ETHERNETx: Select the ETHERNET peripheral.
+  *         This parameter should be MDR_ETHERNET1.
+  * @retval The amount of free space in bytes to write packet data (not including service fields - length and packet transfer state).
+  */
+uint16_t ETH_GetTxBufferFreeSize(MDR_ETHERNET_TypeDef * ETHERNETx)
+{
+    uint16_t tmpreg_X_Tail, tmpreg_X_Head, tmpreg_Dilimiter, ETH_TxFreeBufferSize;
+
+    /* Check the parameters */
+    assert_param(IS_ETH_ALL_PERIPH(ETHERNETx));
+
+    tmpreg_X_Tail = ETHERNETx->ETH_X_Tail;
+    tmpreg_X_Head = ETHERNETx->ETH_X_Head;
+    tmpreg_Dilimiter = ETHERNETx->ETH_Dilimiter;
+
+    if(tmpreg_X_Head > tmpreg_X_Tail)
+    {
+        ETH_TxFreeBufferSize = tmpreg_X_Head - tmpreg_X_Tail;
+    }
+    else
+    {
+        ETH_TxFreeBufferSize = (ETH_BUFFER_SIZE - tmpreg_X_Tail) + (tmpreg_X_Head - tmpreg_Dilimiter);
+    }
+
+    /* 16 bytes are occupied by service data */
+    return (ETH_TxFreeBufferSize - 16);
+}
+
+/** @} */ /* End of group ETH_Exported_Functions */
+
+#endif /* #if defined (USE_K1986VE1xI) */
 
 /** @} */ /* End of group ETHERNET ETHERNET  */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_eth.c */
 

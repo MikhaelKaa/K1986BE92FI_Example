@@ -11,6 +11,8 @@
         "mdr32fxqi_port.h": "c",
         "system_mdr32f9q2i.h": "c",
         "memory_man.h": "c",
-        "mdr32fxqi_uart.h": "c"
+        "mdr32fxqi_uart.h": "c",
+        "mdr32fxqi_rst_clk.h": "c",
+        "micros.h": "c"
     }
 }

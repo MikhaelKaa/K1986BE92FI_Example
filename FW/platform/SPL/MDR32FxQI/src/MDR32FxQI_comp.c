@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_comp.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    17/03/2022
+  * @version V2.1.1i
+  * @date    23/07/2024
   * @brief   This file contains all the COMP firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -26,13 +26,13 @@
   * @{
   */
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /** @defgroup COMP COMP
-  * @warning This module can be used only for MCU MDR32F9Q2I and MDR32FG16S1QI.
+  * @warning This module can be used only for MCU MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @{
   */
 
-/** @defgroup COMP_Private_Functions COMP Private Functions
+/** @defgroup COMP_Exported_Functions COMP Exported Functions
   * @{
   */
 
@@ -295,7 +295,7 @@ void COMP_CVRefScaleConfig(COMP_CVRef_Scale Scale)
     assert_param(IS_COMP_CVREF_SCALE_CONFIG(Scale));
 
     tmpreg_CFG = MDR_COMP->CFG;
-    tmpreg_CFG &= ~COMP_CFG_CVR_Msk;
+    tmpreg_CFG &= ~(COMP_CFG_CVR_Msk | COMP_CFG_CVRR);
     tmpreg_CFG += Scale;
 
     MDR_COMP->CFG = tmpreg_CFG;
@@ -375,14 +375,14 @@ void COMP_ITConfig(FunctionalState NewState)
     MDR_COMP->CFG = tmpreg_CFG;
 }
 
-/** @} */ /* End of group COMP_Private_Functions */
+/** @} */ /* End of group COMP_Exported_Functions */
 
 /** @} */ /* End of group COMP */
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_comp.c */
 

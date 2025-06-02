@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_audio.h
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    10/03/2022
+  * @version V2.1.0i
+  * @date    29/06/2023
   * @brief   This file contains all the functions prototypes for the AUDIO_IP
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -107,13 +107,150 @@ typedef enum
                                                ((FILTER_MODE) == AUDIO_IP_FILTER_MODE_IIR_FILTER))
 
 /**
+  * @brief AUDIO_IP ADC gain
+  */
+typedef enum
+{
+    AUDIO_IP_ADGain_minus42dB = ((uint32_t)0x00 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus41dB = ((uint32_t)0x01 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus40dB = ((uint32_t)0x02 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus39dB = ((uint32_t)0x03 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus38dB = ((uint32_t)0x04 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus37dB = ((uint32_t)0x05 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus36dB = ((uint32_t)0x06 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus35dB = ((uint32_t)0x07 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus34dB = ((uint32_t)0x08 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus33dB = ((uint32_t)0x09 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus32dB = ((uint32_t)0x0A << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus31dB = ((uint32_t)0x0B << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus30dB = ((uint32_t)0x0C << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus29dB = ((uint32_t)0x0D << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus28dB = ((uint32_t)0x0E << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus27dB = ((uint32_t)0x0F << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus26dB = ((uint32_t)0x10 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus25dB = ((uint32_t)0x11 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus24dB = ((uint32_t)0x12 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus23dB = ((uint32_t)0x13 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus22dB = ((uint32_t)0x14 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus21dB = ((uint32_t)0x15 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus20dB = ((uint32_t)0x16 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus19dB = ((uint32_t)0x17 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus18dB = ((uint32_t)0x18 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus17dB = ((uint32_t)0x19 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus16dB = ((uint32_t)0x1A << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus15dB = ((uint32_t)0x1B << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus14dB = ((uint32_t)0x1C << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus13dB = ((uint32_t)0x1D << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus12dB = ((uint32_t)0x1E << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus11dB = ((uint32_t)0x1F << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus10dB = ((uint32_t)0x20 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus9dB  = ((uint32_t)0x21 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus8dB  = ((uint32_t)0x22 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus7dB  = ((uint32_t)0x23 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus6dB  = ((uint32_t)0x24 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus5dB  = ((uint32_t)0x25 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus4dB  = ((uint32_t)0x26 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus3dB  = ((uint32_t)0x27 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus2dB  = ((uint32_t)0x28 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_minus1dB  = ((uint32_t)0x29 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_0dB       = ((uint32_t)0x2A << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus1dB   = ((uint32_t)0x2B << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus2dB   = ((uint32_t)0x2C << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus3dB   = ((uint32_t)0x2D << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus4dB   = ((uint32_t)0x2E << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus5dB   = ((uint32_t)0x2F << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus6dB   = ((uint32_t)0x30 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus7dB   = ((uint32_t)0x31 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus8dB   = ((uint32_t)0x32 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus9dB   = ((uint32_t)0x33 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus10dB  = ((uint32_t)0x34 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus11dB  = ((uint32_t)0x35 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus12dB  = ((uint32_t)0x36 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus13dB  = ((uint32_t)0x37 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus14dB  = ((uint32_t)0x38 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus15dB  = ((uint32_t)0x39 << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus16dB  = ((uint32_t)0x3A << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus17dB  = ((uint32_t)0x3B << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus18dB  = ((uint32_t)0x3C << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus19dB  = ((uint32_t)0x3D << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_plus20dB  = ((uint32_t)0x3E << AUDIO_IP_ADCCTL_ADGAIN_Pos),
+    AUDIO_IP_ADGain_MUTE      = ((uint32_t)0x3F << AUDIO_IP_ADCCTL_ADGAIN_Pos)
+} AUDIO_IP_ADGain;
+
+#define IS_AUDIO_IP_AD_GAIN(AD_GAIN)    \
+            (((AD_GAIN) == AUDIO_IP_ADGain_minus42dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus41dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus40dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus39dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus38dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus37dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus36dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus35dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus34dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus33dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus32dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus31dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus30dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus29dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus28dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus27dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus26dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus25dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus24dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus23dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus22dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus21dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus20dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus19dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus18dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus17dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus16dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus15dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus14dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus13dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus12dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus11dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus10dB) || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus9dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus8dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus7dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus6dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus5dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus4dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus3dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus2dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_minus1dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_0dB)       || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus1dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus2dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus3dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus4dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus5dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus6dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus7dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus8dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus9dB)   || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus10dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus11dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus12dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus13dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus14dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus15dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus16dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus17dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus18dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus19dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_plus20dB)  || \
+             ((AD_GAIN) == AUDIO_IP_ADGain_MUTE))
+
+/**
   * @brief AUDIO_IP ADC Input Amplifier Level
   */
 typedef enum
 {
     AUDIO_IP_ADC_INPUT_AMPLIFIER_LEVEL_0_DB  = ((uint32_t)0x00),
-    AUDIO_IP_ADC_INPUT_AMPLIFIER_LEVEL_6_DB  = ((uint32_t)0x01),
-    AUDIO_IP_ADC_INPUT_AMPLIFIER_LEVEL_12_DB = ((uint32_t)0x02),
+    AUDIO_IP_ADC_INPUT_AMPLIFIER_LEVEL_12_DB = ((uint32_t)0x01),
+    AUDIO_IP_ADC_INPUT_AMPLIFIER_LEVEL_6_DB  = ((uint32_t)0x02),
     AUDIO_IP_ADC_INPUT_AMPLIFIER_LEVEL_24_DB = ((uint32_t)0x03)
 } AUDIO_IP_ADC_Input_Ampl;
 
@@ -157,6 +294,143 @@ typedef enum
 
 #define IS_AUDIO_IP_DAC_SIDE_TONE_LOOP_BACK(SIDE_TONE_LOOP_BACK) \
                 ((SIDE_TONE_LOOP_BACK) <= AUDIO_IP_DAC_SIDE_TONE_LOOP_BACK_MUTE)
+
+/**
+  * @brief AUDIO_IP DAC gain
+  */
+typedef enum
+{
+    AUDIO_IP_DAGain_minus42dB = ((uint32_t)0x00 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus41dB = ((uint32_t)0x01 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus40dB = ((uint32_t)0x02 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus39dB = ((uint32_t)0x03 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus38dB = ((uint32_t)0x04 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus37dB = ((uint32_t)0x05 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus36dB = ((uint32_t)0x06 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus35dB = ((uint32_t)0x07 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus34dB = ((uint32_t)0x08 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus33dB = ((uint32_t)0x09 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus32dB = ((uint32_t)0x0A << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus31dB = ((uint32_t)0x0B << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus30dB = ((uint32_t)0x0C << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus29dB = ((uint32_t)0x0D << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus28dB = ((uint32_t)0x0E << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus27dB = ((uint32_t)0x0F << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus26dB = ((uint32_t)0x10 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus25dB = ((uint32_t)0x11 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus24dB = ((uint32_t)0x12 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus23dB = ((uint32_t)0x13 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus22dB = ((uint32_t)0x14 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus21dB = ((uint32_t)0x15 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus20dB = ((uint32_t)0x16 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus19dB = ((uint32_t)0x17 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus18dB = ((uint32_t)0x18 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus17dB = ((uint32_t)0x19 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus16dB = ((uint32_t)0x1A << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus15dB = ((uint32_t)0x1B << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus14dB = ((uint32_t)0x1C << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus13dB = ((uint32_t)0x1D << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus12dB = ((uint32_t)0x1E << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus11dB = ((uint32_t)0x1F << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus10dB = ((uint32_t)0x20 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus9dB  = ((uint32_t)0x21 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus8dB  = ((uint32_t)0x22 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus7dB  = ((uint32_t)0x23 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus6dB  = ((uint32_t)0x24 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus5dB  = ((uint32_t)0x25 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus4dB  = ((uint32_t)0x26 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus3dB  = ((uint32_t)0x27 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus2dB  = ((uint32_t)0x28 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_minus1dB  = ((uint32_t)0x29 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_0dB       = ((uint32_t)0x2A << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus1dB   = ((uint32_t)0x2B << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus2dB   = ((uint32_t)0x2C << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus3dB   = ((uint32_t)0x2D << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus4dB   = ((uint32_t)0x2E << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus5dB   = ((uint32_t)0x2F << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus6dB   = ((uint32_t)0x30 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus7dB   = ((uint32_t)0x31 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus8dB   = ((uint32_t)0x32 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus9dB   = ((uint32_t)0x33 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus10dB  = ((uint32_t)0x34 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus11dB  = ((uint32_t)0x35 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus12dB  = ((uint32_t)0x36 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus13dB  = ((uint32_t)0x37 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus14dB  = ((uint32_t)0x38 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus15dB  = ((uint32_t)0x39 << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus16dB  = ((uint32_t)0x3A << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus17dB  = ((uint32_t)0x3B << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus18dB  = ((uint32_t)0x3C << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus19dB  = ((uint32_t)0x3D << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_plus20dB  = ((uint32_t)0x3E << AUDIO_IP_DACCTL_DAGAIN_Pos),
+    AUDIO_IP_DAGain_MUTE      = ((uint32_t)0x3F << AUDIO_IP_DACCTL_DAGAIN_Pos)
+} AUDIO_IP_DAGain;
+
+#define IS_AUDIO_IP_DA_GAIN(DA_GAIN)    \
+            (((DA_GAIN) == AUDIO_IP_DAGain_minus42dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus41dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus40dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus39dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus38dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus37dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus36dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus35dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus34dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus33dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus32dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus31dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus30dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus29dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus28dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus27dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus26dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus25dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus24dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus23dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus22dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus21dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus20dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus19dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus18dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus17dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus16dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus15dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus14dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus13dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus12dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus11dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus10dB) || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus9dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus8dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus7dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus6dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus5dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus4dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus3dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus2dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_minus1dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_0dB)       || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus1dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus2dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus3dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus4dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus5dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus6dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus7dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus8dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus9dB)   || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus10dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus11dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus12dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus13dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus14dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus15dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus16dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus17dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus18dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus19dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_plus20dB)  || \
+             ((DA_GAIN) == AUDIO_IP_DAGain_MUTE))
 
 /**
   * @brief AUDIO_IP AUDIO_IP Interrupt Masks
@@ -230,8 +504,8 @@ typedef struct
       * @brief ADCCTL    The ADC control.
       */
 
-    uint32_t                ADGain;                     /*!< Defines recording level of the input signal.
-                                                             This parameter can be of a value from 0 to 0x3F. */
+    AUDIO_IP_ADGain         ADGain;                     /*!< Defines recording level of the input signal.
+                                                             This parameter can be a value of @ref AUDIO_IP_ADGain */
     AUDIO_IP_ADC_Input_Ampl ADCInputAmplifier;          /*!< Defines the level of input preamplifier.
                                                              This parameter can be value of the@ref AUDIO_IP_ADC_Input_Ampl. */
     AUDIO_IP_ADC_Input_Src  ADCAnalogInput;             /*!< Select the ADC source of the input signal.
@@ -242,8 +516,8 @@ typedef struct
       * @brief DACCTL    The DAC control.
       */
 
-    uint32_t                DAGain;                     /*!< Defines the level of playback output signal.
-                                                             This parameter can be of a value from 0 to 0x3F. */
+    AUDIO_IP_DAGain         DAGain;                     /*!< Defines the level of playback output signal.
+                                                             This parameter can be a value of @ref AUDIO_IP_DAGain */
     FunctionalState         DACMute;                    /*!< Enable or disable the DAC output mute.
                                                              This parameter can be a value of @ref FunctionalState */
     FunctionalState         DACOutputAmplifier;         /*!< Enable or disable DAC analog output amplifier.
@@ -257,22 +531,12 @@ typedef struct
     FunctionalState         DACOverCurrentNetOffsetDet; /*!< Determines the resolution of a short-circuit detection circuit bias circuitry.
                                                              This parameter can be a value of @ref FunctionalState */
     AUDIO_IP_DAC_Side_Tone  DACSideToneLoopBack;        /*!< Set the value of the side tone loob back.
-                                                             This parameter can be a value if the @ref AUDIO_IP_DAC_Side_Tone. */
+                                                             This parameter can be a value of @ref AUDIO_IP_DAC_Side_Tone. */
     FunctionalState         DACState;                   /*!< Determines the work mode of the AUDIO DAC.
                                                              This parameter can be a value of @ref FunctionalState */
 } AUDIO_IP_InitTypeDef;
 
 /** @} */ /* End of group AUDIO_IP_Exported_Types */
-
-
-/** @defgroup AUDIO_IP_Exported_Constants AUDIO_IP Exported Constants
-  * @{
-  */
-
-#define IS_AUDIO_IP_AD_GAIN(AD_GAIN)  (((AD_GAIN) & (~0x0000003F)) == 0)
-#define IS_AUDIO_IP_DA_GAIN(DA_GAIN)  (((DA_GAIN) & (~0x0000003F)) == 0)
-
-/** @} */ /* End of group AUDIO_IP_Exported_Constants */
 
 
 /** @defgroup AUDIO_IP_Exported_Functions AUDIO_IP Exported Functions
@@ -283,8 +547,8 @@ void AUDIO_IP_StructInit(AUDIO_IP_InitTypeDef * AUDIO_IP_InitStruct);
 void AUDIO_IP_Init(AUDIO_IP_InitTypeDef * AUDIO_IP_InitStruct);
 void AUDIO_IP_ADCCmd(FunctionalState NewState);
 void AUDIO_IP_DACCmd(FunctionalState NewState);
-void AUDIO_IP_SetADGain(uint32_t GainValue);
-void AUDIO_IP_SetDAGain(uint32_t GainValue);
+void AUDIO_IP_SetADGain(AUDIO_IP_ADGain GainValue);
+void AUDIO_IP_SetDAGain(AUDIO_IP_DAGain GainValue);
 void AUDIO_IP_SetADCInputAmplifierLevel(AUDIO_IP_ADC_Input_Ampl InputAmplifierLevel);
 void AUDIO_IP_SetADCInputSource(AUDIO_IP_ADC_Input_Src ADCInputSource);
 void AUDIO_IP_DACMuteCmd(FunctionalState NewState);
@@ -309,7 +573,7 @@ void AUDIO_IP_SendData(uint16_t AudioData);
 
 #endif /* MDR32FxQI_AUDIO_H_ */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_audio.h */
 

@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_adc.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    14/03/2022
+  * @version V2.1.1i
+  * @date    24/07/2024
   * @brief   This file contains all the ADC firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -30,7 +30,7 @@
   * @{
   */
 
-/** @defgroup ADC_Private_Functions ADC Private Functions
+/** @defgroup ADC_Exported_Functions ADC Exported Functions
   * @{
   */
 
@@ -49,7 +49,7 @@ void ADC_DeInit(void)
     MDR_ADC->ADC1_STATUS = 0;
     MDR_ADC->ADC1_CHSEL = 0;
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     MDR_ADC->ADC2_H_LEVEL = 0;
     MDR_ADC->ADC2_L_LEVEL = 0;
     MDR_ADC->ADC2_RESULT;
@@ -57,7 +57,7 @@ void ADC_DeInit(void)
     MDR_ADC->ADC2_CHSEL = 0;
 #endif
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     MDR_ADC->ADC1_TRIM = 0;
 #endif
 }
@@ -73,50 +73,50 @@ void ADC_Init(const ADC_InitTypeDef* ADC_InitStruct)
 {
     uint32_t tmpreg_CFG;
     uint32_t tmpreg_MSK;
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     uint32_t tmpreg_TRIM;
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
     /* Check the parameters */
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     assert_param(IS_ADC_SYNC_MODE(ADC_InitStruct->ADC_SynchronousMode));
     assert_param(IS_ADC_START_DELAY_VALUE(ADC_InitStruct->ADC_StartDelay));
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
     assert_param(IS_ADC_TEMP_SENSOR_CONFIG(ADC_InitStruct->ADC_TempSensor));
     assert_param(IS_ADC_TEMP_SENSOR_AMP_CONFIG(ADC_InitStruct->ADC_TempSensorAmplifier));
     assert_param(IS_ADC_TEMP_SENSOR_CONVERSION_CONFIG(ADC_InitStruct->ADC_TempSensorConversion));
     assert_param(IS_ADC_VREF_CONVERSION_CONFIG(ADC_InitStruct->ADC_IntVRefConversion));
     assert_param(IS_ADC_VREF_TRIMMING_VALUE(ADC_InitStruct->ADC_IntVRefTrimming));
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     assert_param(IS_ADC_INT_VREF_AMPLIFIER(ADC_InitStruct->ADC_IntVRefAmplifier));
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
     tmpreg_CFG = ADC_InitStruct->ADC_TempSensor
-               + ADC_InitStruct->ADC_TempSensorAmplifier
-               + ADC_InitStruct->ADC_TempSensorConversion
-               + ADC_InitStruct->ADC_IntVRefConversion;
+               | ADC_InitStruct->ADC_TempSensorAmplifier
+               | ADC_InitStruct->ADC_TempSensorConversion
+               | ADC_InitStruct->ADC_IntVRefConversion;
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
-    tmpreg_CFG += (ADC_InitStruct->ADC_StartDelay << ADC1_CFG_DELAY_ADC_Pos)
-               +   ADC_InitStruct->ADC_SynchronousMode
-               +  (ADC_InitStruct->ADC_IntVRefTrimming << ADC1_CFG_TR_Pos);
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
+    tmpreg_CFG |= (ADC_InitStruct->ADC_StartDelay << ADC1_CFG_DELAY_ADC_Pos)
+               |   ADC_InitStruct->ADC_SynchronousMode
+               |  (ADC_InitStruct->ADC_IntVRefTrimming << ADC1_CFG_TR_Pos);
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
     tmpreg_MSK = ADC1_CFG_DELAY_ADC_Msk
                | ADC1_CFG_TS_EN
                | ADC1_CFG_TS_BUF_EN
                | ADC1_CFG_SEL_TS
                | ADC1_CFG_SEL_VREF;
-#if defined(USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined(USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     tmpreg_MSK |= ADC1_CFG_TR_Msk
                |  ADC1_CFG_SYNC_CONVER;
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     tmpreg_TRIM = (ADC_InitStruct->ADC_IntVRefTrimming << ADC1_TRIM_TS_TRIM_Pos)
                 |  ADC_InitStruct->ADC_IntVRefAmplifier;
     MDR_ADC->ADC1_TRIM  = tmpreg_TRIM;
 #endif
 
-    MDR_ADC->ADC1_CFG = (MDR_ADC->ADC1_CFG & ~tmpreg_MSK) + tmpreg_CFG;
+    MDR_ADC->ADC1_CFG = (MDR_ADC->ADC1_CFG & ~tmpreg_MSK) | tmpreg_CFG;
 }
 
 /**
@@ -127,7 +127,7 @@ void ADC_Init(const ADC_InitTypeDef* ADC_InitStruct)
   */
 void ADC_StructInit(ADC_InitTypeDef* ADC_InitStruct)
 {
-#if defined(USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined(USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     ADC_InitStruct->ADC_SynchronousMode     = ADC_SyncMode_Independent;
     ADC_InitStruct->ADC_StartDelay           = 0;
 #endif
@@ -137,7 +137,7 @@ void ADC_StructInit(ADC_InitTypeDef* ADC_InitStruct)
     ADC_InitStruct->ADC_IntVRefConversion    = ADC_VREF_CONVERSION_Disable;
     ADC_InitStruct->ADC_IntVRefTrimming      = 0;
 
-#if defined(USE_MDR32F1QI)
+#if defined(USE_K1986VE1xI)
     ADC_InitStruct->ADC_IntVRefAmplifier     = ADC_INT_VREF_AMPLIFIER_Disable;
 #endif
 }
@@ -145,26 +145,26 @@ void ADC_StructInit(ADC_InitTypeDef* ADC_InitStruct)
 
 /**
   * @brief  Sets the Internal Voltage Reference trimming.
-  * @param  Trim: trimming value:
-  *         This parameter can be a value in range 0..7  for MDR32F9Q2I and MDR32FG16S1QI;
-  *                                   and in range 0..31 for MDR32F1QI;
+  * @param  Trim: trimming value.
+  *         This parameter can be a value in range 0..7  for MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI;
+  *                                   and in range 0..31 for MDR32F1QI, K1986VE1xI.
   * @retval None
   */
-void ADC_SetTrim(uint32_t Trim)
+void ADC_SetTrim(uint8_t Trim)
 {
     uint32_t tmpreg;
 
     /* Check the parameters */
     assert_param(IS_ADC_VREF_TRIMMING_VALUE(Trim));
 
-#if defined(USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined(USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     tmpreg = MDR_ADC->ADC1_CFG & ~ADC1_CFG_TR_Msk;
-    MDR_ADC->ADC1_CFG = tmpreg + (Trim << ADC1_CFG_TR_Pos);
+    MDR_ADC->ADC1_CFG = tmpreg | ((uint32_t)Trim << ADC1_CFG_TR_Pos);
 
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     tmpreg = MDR_ADC->ADC1_TRIM;
     tmpreg &= ~ADC1_TRIM_TS_TRIM_Msk;
-    tmpreg |= Trim << ADC1_TRIM_TS_TRIM_Pos;
+    tmpreg |= ((uint32_t)Trim << ADC1_TRIM_TS_TRIM_Pos);
     MDR_ADC->ADC1_TRIM = tmpreg;
 #endif
 }
@@ -208,18 +208,18 @@ void ADC1_Init(const ADCx_InitTypeDef* ADCx_InitStruct)
                    | ADC1_CFG_REG_DIVCLK_Msk
                    | ADC1_CFG_DELAY_GO_Msk);
 
-    tmpreg_CFG1 += ADCx_InitStruct->ADC_ClockSource
-                 + ADCx_InitStruct->ADC_SamplingMode
-                 + ADCx_InitStruct->ADC_ChannelSwitching
-                 + (ADCx_InitStruct->ADC_ChannelNumber << ADC1_CFG_REG_CHS_Pos)
-                 + ADCx_InitStruct->ADC_LevelControl
-                 + ADCx_InitStruct->ADC_VRefSource
-                 + ADCx_InitStruct->ADC_Prescaler
-                 + (ADCx_InitStruct->ADC_DelayGo << ADC1_CFG_DELAY_GO_Pos);
+    tmpreg_CFG1 |= ADCx_InitStruct->ADC_ClockSource
+                 | ADCx_InitStruct->ADC_SamplingMode
+                 | ADCx_InitStruct->ADC_ChannelSwitching
+                 | (ADCx_InitStruct->ADC_ChannelNumber << ADC1_CFG_REG_CHS_Pos)
+                 | ADCx_InitStruct->ADC_LevelControl
+                 | ADCx_InitStruct->ADC_VRefSource
+                 | ADCx_InitStruct->ADC_Prescaler
+                 | (ADCx_InitStruct->ADC_DelayGo << ADC1_CFG_DELAY_GO_Pos);
 
     tmpreg_CFG2 = MDR_ADC->ADC2_CFG;
     tmpreg_CFG2 &= ~ADC2_CFG_ADC1_OP;
-    tmpreg_CFG2 += ADCx_InitStruct->ADC_IntVRefSource << ADC2_CFG_ADC1_OP_Pos;
+    tmpreg_CFG2 |= (ADCx_InitStruct->ADC_IntVRefSource << ADC2_CFG_ADC1_OP_Pos);
 
 
     MDR_ADC->ADC1_L_LEVEL = ADCx_InitStruct->ADC_LowLevel;
@@ -230,12 +230,12 @@ void ADC1_Init(const ADCx_InitTypeDef* ADCx_InitStruct)
     MDR_ADC->ADC2_CFG = tmpreg_CFG2;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Initializes the ADC2 peripheral according to
   *          the specified parameters in the ADCx_InitStruct.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   ADCx_InitStruct: pointer to a @ref ADCx_InitTypeDef structure
   *          that contains the configuration information for the ADC2
   *          peripheral.
@@ -271,15 +271,15 @@ void ADC2_Init(const ADCx_InitTypeDef* ADCx_InitStruct)
                    | ADC2_CFG_REG_DIVCLK_Msk
                    | ADC2_CFG_DELAY_GO_Msk);
 
-    tmpreg_CFG2 += ADCx_InitStruct->ADC_ClockSource
-                 + ADCx_InitStruct->ADC_SamplingMode
-                 + ADCx_InitStruct->ADC_ChannelSwitching
-                 + (ADCx_InitStruct->ADC_ChannelNumber << ADC2_CFG_REG_CHS_Pos)
-                 + ADCx_InitStruct->ADC_LevelControl
-                 + ADCx_InitStruct->ADC_VRefSource
-                 + (ADCx_InitStruct->ADC_IntVRefSource << ADC2_CFG_ADC2_OP_Pos)
-                 + ADCx_InitStruct->ADC_Prescaler
-                 + (ADCx_InitStruct->ADC_DelayGo << ADC2_CFG_DELAY_GO_Pos);
+    tmpreg_CFG2 |= ADCx_InitStruct->ADC_ClockSource
+                 | ADCx_InitStruct->ADC_SamplingMode
+                 | ADCx_InitStruct->ADC_ChannelSwitching
+                 | (ADCx_InitStruct->ADC_ChannelNumber << ADC2_CFG_REG_CHS_Pos)
+                 | ADCx_InitStruct->ADC_LevelControl
+                 | ADCx_InitStruct->ADC_VRefSource
+                 | (ADCx_InitStruct->ADC_IntVRefSource << ADC2_CFG_ADC2_OP_Pos)
+                 | ADCx_InitStruct->ADC_Prescaler
+                 | (ADCx_InitStruct->ADC_DelayGo << ADC2_CFG_DELAY_GO_Pos);
 
     MDR_ADC->ADC2_L_LEVEL = ADCx_InitStruct->ADC_LowLevel;
     MDR_ADC->ADC2_H_LEVEL = ADCx_InitStruct->ADC_HighLevel;
@@ -287,7 +287,7 @@ void ADC2_Init(const ADCx_InitTypeDef* ADCx_InitStruct)
 
     MDR_ADC->ADC2_CFG = tmpreg_CFG2;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Fills each ADCx_InitStruct member with its default value.
@@ -341,11 +341,11 @@ void ADC1_Cmd(FunctionalState NewState)
     MDR_ADC->ADC1_CFG = tmpreg_CFG;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Enables or disables the ADC1 peripheral.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   NewState - @ref FunctionalState - new state of the ADC1 peripheral.
   * @retval  None
   */
@@ -373,7 +373,7 @@ void ADC2_Cmd(FunctionalState NewState)
     /* Configure ADC2_CFG register with new value */
     MDR_ADC->ADC2_CFG = tmpreg_CFG;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Selects the ADC1 Channel number for Single Channel Mode conversion.
@@ -389,15 +389,15 @@ void ADC1_SetChannel(ADCx_Channel_Number Channel)
 
     tmpreg_CFG = MDR_ADC->ADC1_CFG;
     tmpreg_CFG &= ~ADC1_CFG_REG_CHS_Msk;
-    tmpreg_CFG += Channel << ADC1_CFG_REG_CHS_Pos;
+    tmpreg_CFG |= ((uint32_t)Channel << ADC1_CFG_REG_CHS_Pos);
     MDR_ADC->ADC1_CFG = tmpreg_CFG;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Selects the ADC2 Channel number for Single Channel Mode conversion.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   Channel - @ref ADCx_Channel_Number - specifies the ADC Channel number.
   * @retval  None
   */
@@ -410,10 +410,10 @@ void ADC2_SetChannel(ADCx_Channel_Number Channel)
 
     tmpreg_CFG = MDR_ADC->ADC2_CFG;
     tmpreg_CFG &= ~ADC2_CFG_REG_CHS_Msk;
-    tmpreg_CFG += Channel << ADC2_CFG_REG_CHS_Pos;
+    tmpreg_CFG |= ((uint32_t)Channel << ADC2_CFG_REG_CHS_Pos);
     MDR_ADC->ADC2_CFG = tmpreg_CFG;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Selects the ADC1 Channels for conversion with Channels switching.
@@ -429,11 +429,11 @@ void ADC1_SetChannels(uint32_t ChannelMask)
     MDR_ADC->ADC1_CHSEL = ChannelMask;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Selects the ADC2 Channels for conversion with Channels switching.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   ChannelMask: specifies the ADC Channels Mask.
   *          This parameter can be any combination of @ref ADCx_Channels values.
   * @retval  None
@@ -445,7 +445,7 @@ void ADC2_SetChannels(uint32_t ChannelMask)
 
     MDR_ADC->ADC2_CHSEL = ChannelMask;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Sets the ADC1 operation mode.
@@ -463,15 +463,15 @@ void ADC1_OperationModeConfig(ADCx_Sampling_Mode SamplingMode, ADCx_Channel_Swit
 
     tmpreg_CFG = MDR_ADC->ADC1_CFG;
     tmpreg_CFG &= ~(ADC1_CFG_REG_SAMPLE | ADC1_CFG_REG_CHCH);
-    tmpreg_CFG += (uint32_t)SamplingMode + (uint32_t)SwitchingMode;
+    tmpreg_CFG |= (uint32_t)SamplingMode | (uint32_t)SwitchingMode;
     MDR_ADC->ADC1_CFG = tmpreg_CFG;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Sets the ADC2 operation mode.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   SamplingMode - @ref ADCx_Sampling_Mode - specifies the ADC2 sampling.
   * @param   SwitchingMode - @ref ADCx_Channel_Switching - specifies the ADC2 channel switching.
   * @retval  None
@@ -486,10 +486,10 @@ void ADC2_OperationModeConfig(ADCx_Sampling_Mode SamplingMode, ADCx_Channel_Swit
 
     tmpreg_CFG = MDR_ADC->ADC2_CFG;
     tmpreg_CFG &= ~(ADC2_CFG_REG_SAMPLE | ADC2_CFG_REG_CHCH);
-    tmpreg_CFG += (uint32_t)SamplingMode + (uint32_t)SwitchingMode;
+    tmpreg_CFG |= (uint32_t)SamplingMode | (uint32_t)SwitchingMode;
     MDR_ADC->ADC2_CFG = tmpreg_CFG;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Sets the ADC1 sampling mode.
@@ -505,15 +505,15 @@ void ADC1_SamplingModeConfig(ADCx_Sampling_Mode SamplingMode)
 
     tmpreg_CFG = MDR_ADC->ADC1_CFG;
     tmpreg_CFG &= ~ADC1_CFG_REG_SAMPLE;
-    tmpreg_CFG += (uint32_t)SamplingMode;
+    tmpreg_CFG |= (uint32_t)SamplingMode;
     MDR_ADC->ADC1_CFG = tmpreg_CFG;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Sets the ADC2 sampling mode.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   SamplingMode - @ref ADCx_Sampling_Mode - specifies the ADC2 sampling.
   * @retval  None
   */
@@ -526,10 +526,10 @@ void ADC2_SamplingModeConfig(ADCx_Sampling_Mode SamplingMode)
 
     tmpreg_CFG = MDR_ADC->ADC2_CFG;
     tmpreg_CFG &= ~ADC2_CFG_REG_SAMPLE;
-    tmpreg_CFG += (uint32_t)SamplingMode;
+    tmpreg_CFG |= (uint32_t)SamplingMode;
     MDR_ADC->ADC2_CFG = tmpreg_CFG;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Sets the ADC1 channel switching mode.
@@ -545,15 +545,15 @@ void ADC1_ChannelSwithingConfig(ADCx_Channel_Switching SwitchingMode)
 
     tmpreg_CFG = MDR_ADC->ADC1_CFG;
     tmpreg_CFG &= ~ADC1_CFG_REG_CHCH;
-    tmpreg_CFG += (uint32_t)SwitchingMode;
+    tmpreg_CFG |= (uint32_t)SwitchingMode;
     MDR_ADC->ADC1_CFG = tmpreg_CFG;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Sets the ADC2 channel switching mode.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   SwitchingMode - @ref ADCx_Channel_Switching - specifies the ADC2 channel switching.
   * @retval  None
   */
@@ -566,10 +566,10 @@ void ADC2_ChannelSwithingConfig(ADCx_Channel_Switching SwitchingMode)
 
     tmpreg_CFG = MDR_ADC->ADC2_CFG;
     tmpreg_CFG &= ~ADC2_CFG_REG_CHCH;
-    tmpreg_CFG += (uint32_t)SwitchingMode;
+    tmpreg_CFG |= (uint32_t)SwitchingMode;
     MDR_ADC->ADC2_CFG = tmpreg_CFG;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Configures the ADC1 threshould levels.
@@ -580,27 +580,27 @@ void ADC2_ChannelSwithingConfig(ADCx_Channel_Switching SwitchingMode)
   */
 void ADC1_LevelsConfig(uint32_t LowLevel, uint32_t HighLevel, ADCx_Level_Control NewState)
 {
-    uint32_t tmpreg_CFG;
-
     /* Check the parameters */
     assert_param(IS_ADC_LEVEL_CONTROL_CONFIG(NewState));
     assert_param(IS_ADC_VALUE(LowLevel));
     assert_param(IS_ADC_VALUE(HighLevel));
 
-    tmpreg_CFG = MDR_ADC->ADC1_CFG;
-    tmpreg_CFG &= ~ADC1_CFG_REG_RNGC;
-    tmpreg_CFG += (uint32_t)NewState;
-    MDR_ADC->ADC1_CFG = tmpreg_CFG;
-
-    MDR_ADC->ADC1_L_LEVEL = LowLevel;
-    MDR_ADC->ADC1_H_LEVEL = HighLevel;
+    if (NewState != ADC_LEVEL_CONTROL_Disable) {
+        MDR_ADC->ADC1_L_LEVEL = LowLevel;
+        MDR_ADC->ADC1_H_LEVEL = HighLevel;
+        MDR_ADC->ADC1_CFG |= ADC1_CFG_REG_RNGC;
+    } else {
+        MDR_ADC->ADC1_CFG &= ~ADC1_CFG_REG_RNGC;
+        MDR_ADC->ADC1_L_LEVEL = LowLevel;
+        MDR_ADC->ADC1_H_LEVEL = HighLevel;
+    }
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Configures the ADC2 threshould levels.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   LowLevel: specifies the ADC2 low level value.
   * @param   HighLevel: specifies the ADC2 high level value.
   * @param   NewState - @ref ADCx_Level_Control - enables or disables levels control.
@@ -608,22 +608,22 @@ void ADC1_LevelsConfig(uint32_t LowLevel, uint32_t HighLevel, ADCx_Level_Control
   */
 void ADC2_LevelsConfig(uint32_t LowLevel, uint32_t HighLevel, ADCx_Level_Control NewState)
 {
-    uint32_t tmpreg_CFG;
-
     /* Check the parameters */
     assert_param(IS_ADC_LEVEL_CONTROL_CONFIG(NewState));
     assert_param(IS_ADC_VALUE(LowLevel));
     assert_param(IS_ADC_VALUE(HighLevel));
 
-    tmpreg_CFG = MDR_ADC->ADC2_CFG;
-    tmpreg_CFG &= ~ADC2_CFG_REG_RNGC;
-    tmpreg_CFG += (uint32_t)NewState;
-    MDR_ADC->ADC2_CFG = tmpreg_CFG;
-
-    MDR_ADC->ADC2_L_LEVEL = LowLevel;
-    MDR_ADC->ADC2_H_LEVEL = HighLevel;
+    if (NewState != ADC_LEVEL_CONTROL_Disable) {
+        MDR_ADC->ADC2_L_LEVEL = LowLevel;
+        MDR_ADC->ADC2_H_LEVEL = HighLevel;
+        MDR_ADC->ADC2_CFG |= ADC2_CFG_REG_RNGC;
+    } else {
+        MDR_ADC->ADC2_CFG &= ~ADC2_CFG_REG_RNGC;
+        MDR_ADC->ADC2_L_LEVEL = LowLevel;
+        MDR_ADC->ADC2_H_LEVEL = HighLevel;
+    }
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Sets the ADC1 low level.
@@ -638,11 +638,11 @@ void ADC1_SetLowLevel(uint32_t LowLevel)
     MDR_ADC->ADC1_L_LEVEL = LowLevel;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Sets the ADC2 low level.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   LowLevel: specifies the ADC2 low level value.
   * @retval  None
   */
@@ -653,7 +653,7 @@ void ADC2_SetLowLevel(uint32_t LowLevel)
 
     MDR_ADC->ADC2_L_LEVEL = LowLevel;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Sets the ADC1 high level.
@@ -668,11 +668,11 @@ void ADC1_SetHighLevel(uint32_t HighLevel)
     MDR_ADC->ADC1_H_LEVEL = HighLevel;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Sets the ADC2 high level.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   HighLevel: specifies the ADC2 high level value.
   * @retval  None
   */
@@ -683,7 +683,7 @@ void ADC2_SetHighLevel(uint32_t HighLevel)
 
     MDR_ADC->ADC2_H_LEVEL = HighLevel;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Starts the ADC1 conversion.
@@ -695,11 +695,11 @@ void ADC1_Start(void)
     MDR_ADC->ADC1_CFG |= ADC1_CFG_REG_GO;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Starts the ADC2 conversion.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   None.
   * @retval  None.
   */
@@ -707,7 +707,7 @@ void ADC2_Start(void)
 {
     MDR_ADC->ADC2_CFG |= ADC2_CFG_REG_GO;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Returns the ADC1 result.
@@ -719,11 +719,11 @@ uint32_t ADC1_GetResult(void)
     return MDR_ADC->ADC1_RESULT;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Returns the ADC2 result.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   None.
   * @retval  ADC2 Result Register value.
   */
@@ -731,18 +731,18 @@ uint32_t ADC2_GetResult(void)
 {
     return MDR_ADC->ADC2_RESULT;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Returns the ADC1, ADC2 Status Registers combined value.
   * @param  None.
-  * @retval The ADC1_STATUS, ADC2_STATUS Registers combined value.
+  * @retval The ADC1_STATUS, ADC2_STATUS combined value.
   */
 uint32_t ADC_GetStatus(void)
 {
-#if defined  (USE_MDR32F9Q2I)|| defined (USE_MDR32FG16S1QI)
-    return MDR_ADC->ADC1_STATUS + (MDR_ADC->ADC2_STATUS << 16);
-#elif defined (USE_MDR32F1QI)
+#if defined  (USE_K1986VE9xI)|| defined (USE_MDR32FG16S1QI)
+    return MDR_ADC->ADC1_STATUS | (MDR_ADC->ADC2_STATUS << 16);
+#elif defined (USE_K1986VE1xI)
     return MDR_ADC->ADC1_STATUS;
 #endif
 }
@@ -757,11 +757,11 @@ uint32_t ADC1_GetStatus(void)
     return MDR_ADC->ADC1_STATUS;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Returns the ADC2 Status Register value.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   None.
   * @retval  The ADC2_STATUS Register value.
   */
@@ -769,21 +769,22 @@ uint32_t ADC2_GetStatus(void)
 {
     return MDR_ADC->ADC2_STATUS;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Checks whether the specified ADC1, ADC2 Status flag is set or not.
-  * @param  Flag - @ref ADC_Flags - specifies the flag to check.
-  * @retval @ref FlagStatus - Current Status flag state (SET or RESET).
+  * @param  Flags: Specifies the flags to check.
+  *         This parameter could be any combination of @ref ADC_Flags values.
+  * @retval @ref FlagStatus - Current Status flags state (SET or RESET).
   */
-FlagStatus ADC_GetFlagStatus(ADC_Flags Flag)
+FlagStatus ADC_GetFlagStatus(uint32_t Flags)
 {
     FlagStatus bitstatus;
 
     /* Check the parameters */
-    assert_param(IS_ADC_STATUS_FLAG(Flag));
+    assert_param(IS_ADC_STATUS_FLAGS(Flags));
 
-    if ((ADC_GetStatus() & (uint32_t)Flag) == 0)
+    if ((ADC_GetStatus() & Flags) == 0)
     {
         bitstatus = RESET;
     }
@@ -797,17 +798,18 @@ FlagStatus ADC_GetFlagStatus(ADC_Flags Flag)
 
 /**
   * @brief  Checks whether the specified ADC1 Status flag is set or not.
-  * @param  Flag - @ref ADCx_Flags - specifies the flag to check.
+  * @param  Flags: Specifies the flags to check.
+  *         This parameter could be any combination of @ref ADCx_Flags values.
   * @retval @ref FlagStatus - Current Status flag state (SET or RESET).
   */
-FlagStatus ADC1_GetFlagStatus(ADCx_Flags Flag)
+FlagStatus ADC1_GetFlagStatus(uint32_t Flags)
 {
     FlagStatus bitstatus;
 
     /* Check the parameters */
-    assert_param(IS_ADCx_STATUS_FLAG(Flag));
+    assert_param(IS_ADCx_STATUS_FLAGS(Flags));
 
-    if ((MDR_ADC->ADC1_STATUS & (uint32_t)Flag) == 0)
+    if ((MDR_ADC->ADC1_STATUS & Flags) == 0)
     {
         bitstatus = RESET;
     }
@@ -819,22 +821,23 @@ FlagStatus ADC1_GetFlagStatus(ADCx_Flags Flag)
     return bitstatus;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Checks whether the specified ADC2 Status flag is set or not.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
-  * @param   Flag - @ref ADC_Flags - specifies the flag to check.
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
+  * @param   Flags: Specifies the flags to check.
+  *          This parameter could be any combination of @ref ADCx_Flags values.
   * @retval  @ref FlagStatus - Current Status flag state (SET or RESET).
   */
-FlagStatus ADC2_GetFlagStatus(ADCx_Flags Flag)
+FlagStatus ADC2_GetFlagStatus(uint32_t Flags)
 {
     FlagStatus bitstatus;
 
     /* Check the parameters */
-    assert_param(IS_ADCx_STATUS_FLAG(Flag));
+    assert_param(IS_ADCx_STATUS_FLAGS(Flags));
 
-    if ((MDR_ADC->ADC2_STATUS & (uint32_t)Flag) == 0)
+    if ((MDR_ADC->ADC2_STATUS & Flags) == 0)
     {
         bitstatus = RESET;
     }
@@ -845,7 +848,7 @@ FlagStatus ADC2_GetFlagStatus(ADCx_Flags Flag)
 
     return bitstatus;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Clears the ADC1 Overwrite flag.
@@ -854,22 +857,22 @@ FlagStatus ADC2_GetFlagStatus(ADCx_Flags Flag)
   */
 void ADC1_ClearOverwriteFlag(void)
 {
-    MDR_ADC->ADC1_STATUS &= ~ADCx_FLAG_OVERWRITE;
+    MDR_ADC->ADC1_STATUS = (MDR_ADC->ADC1_STATUS | ADCx_FLAG_OUT_OF_RANGE) & ~ADCx_FLAG_OVERWRITE;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Clears the ADC2 Overwrite flag.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   None.
   * @retval  None
   */
 void ADC2_ClearOverwriteFlag(void)
 {
-    MDR_ADC->ADC2_STATUS &= ~ADCx_FLAG_OVERWRITE;
+    MDR_ADC->ADC2_STATUS = (MDR_ADC->ADC2_STATUS | ADCx_FLAG_OUT_OF_RANGE) & ~ADCx_FLAG_OVERWRITE;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)) */
 
 /**
   * @brief  Clears the ADC1 AWOIFEN flag.
@@ -878,164 +881,159 @@ void ADC2_ClearOverwriteFlag(void)
   */
 void ADC1_ClearOutOfRangeFlag(void)
 {
-    MDR_ADC->ADC1_STATUS &= ~ADCx_FLAG_OUT_OF_RANGE;
+    MDR_ADC->ADC1_STATUS = (MDR_ADC->ADC1_STATUS | ADCx_FLAG_OVERWRITE) & ~ADCx_FLAG_OUT_OF_RANGE;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Clears the ADC2 AWOIFEN flag.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
   * @param   None.
   * @retval  None
   */
 void ADC2_ClearOutOfRangeFlag(void)
 {
-    MDR_ADC->ADC2_STATUS &= ~ADCx_FLAG_OUT_OF_RANGE;
+    MDR_ADC->ADC2_STATUS = (MDR_ADC->ADC2_STATUS | ADCx_FLAG_OVERWRITE) & ~ADCx_FLAG_OUT_OF_RANGE;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Enables or disables the ADC1, ADC2 interrupts.
-  * @param  ADC_IT - @ref ADC_IT_Def - specifies the ADC interrupts sources to be enabled or disabled.
+  * @param  ADC_IT: Specifies the ADC interrupts sources to be enabled or disabled.
+  *         This parameter could be any combination of @ref ADC_IT values.
   * @param  NewState - @ref FunctionalState - new state of the ADC interrupts (ENABLE or DISABLE).
   * @retval None
   */
-void ADC_ITConfig(ADC_IT_Def ADC_IT, FunctionalState NewState)
+void ADC_ITConfig(uint32_t ADC_IT, FunctionalState NewState)
 {
-    uint32_t tmpreg_ADC1_IE;
-    uint32_t tmpreg_ADC_IT;
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
-    uint32_t tmpreg_ADC2_IE;
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+    uint32_t tmpreg_ADCx_IE;
 
     /* Check the parameters */
-    assert_param(IS_ADC_CONFIG_IT(ADC_IT));
+    assert_param(IS_ADC_CONFIG_ITS(ADC_IT));
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-    tmpreg_ADC1_IE = MDR_ADC->ADC1_STATUS;
-    tmpreg_ADC_IT = (uint32_t)ADC_IT << 2;
+    tmpreg_ADCx_IE = MDR_ADC->ADC1_STATUS | (ADCx_FLAG_OVERWRITE | ADCx_FLAG_OVERWRITE);
 
     /* Form new value */
     if (NewState != DISABLE)
     {
         /* Enable the ADC Interrupt requests by setting bits in the ADCx_STATUS registers */
-        tmpreg_ADC1_IE |= tmpreg_ADC_IT & 0xFFFF;
+        tmpreg_ADCx_IE |= (ADC_IT & 0xFFFF);
     }
     else
     {
         /* Disable the ADC Interrupt requests by clearing bits in the ADCx_STATUS registers */
-        tmpreg_ADC1_IE &= ~(tmpreg_ADC_IT & 0xFFFF);
+        tmpreg_ADCx_IE &= ~(ADC_IT & 0xFFFF);
     }
 
     /* Configure ADCx_STATUS registers with new value */
-    MDR_ADC->ADC1_STATUS = tmpreg_ADC1_IE;
+    MDR_ADC->ADC1_STATUS = tmpreg_ADCx_IE;
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 
-    tmpreg_ADC2_IE = MDR_ADC->ADC2_STATUS;
+    tmpreg_ADCx_IE = MDR_ADC->ADC2_STATUS | (ADCx_FLAG_OVERWRITE | ADCx_FLAG_OVERWRITE);
 
     /* Form new value */
     if (NewState != DISABLE)
     {
         /* Enable the ADC Interrupt requests by setting bits in the ADCx_STATUS registers */
-        tmpreg_ADC2_IE |= tmpreg_ADC_IT >> 16;
+        tmpreg_ADCx_IE |= ADC_IT >> 16;
     }
     else
     {
         /* Disable the ADC Interrupt requests by clearing bits in the ADCx_STATUS registers */
-        tmpreg_ADC2_IE &= ~(tmpreg_ADC_IT >> 16);
+        tmpreg_ADCx_IE &= ~(ADC_IT >> 16);
     }
     /* Configure ADCx_STATUS registers with new value */
-    MDR_ADC->ADC2_STATUS = tmpreg_ADC2_IE;
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+    MDR_ADC->ADC2_STATUS = tmpreg_ADCx_IE;
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 }
 
 /**
   * @brief  Enables or disables the ADC1 interrupts.
-  * @param  ADC_IT - @ref ADC_IT_Def - specifies the ADC1 interrupts sources to be enabled or disabled.
+  * @param  ADCx_IT: Specifies the ADC1 interrupts sources to be enabled or disabled.
+  *         This parameter could be any combination of @ref ADCx_IT values.
   * @param  NewState - @ref FunctionalState - new state of the ADC1 interrupts (ENABLE or DISABLE).
   * @retval None
   */
-void ADC1_ITConfig(ADC_IT_Def ADC_IT, FunctionalState NewState)
+void ADC1_ITConfig(uint32_t ADCx_IT, FunctionalState NewState)
 {
     uint32_t tmpreg_ADC1_IE;
 
     /* Check the parameters */
-    assert_param(IS_ADCx_CONFIG_IT(ADC_IT));
+    assert_param(IS_ADCx_CONFIG_ITS(ADCx_IT));
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-    tmpreg_ADC1_IE = MDR_ADC->ADC1_STATUS;
+    tmpreg_ADC1_IE = MDR_ADC->ADC1_STATUS | (ADCx_FLAG_OVERWRITE | ADCx_FLAG_OVERWRITE);
 
     /* Form new value */
     if (NewState != DISABLE)
     {
         /* Enable the ADC Interrupt requests by setting bits in the ADC1_STATUS register */
-        tmpreg_ADC1_IE |= ((uint32_t)ADC_IT << 2);
+        tmpreg_ADC1_IE |= ADCx_IT;
     }
     else
     {
         /* Disable the ADC Interrupt requests by clearing bits in the ADC1_STATUS register */
-        tmpreg_ADC1_IE &= ~((uint32_t)ADC_IT << 2);
+        tmpreg_ADC1_IE &= ~ADCx_IT;
     }
 
     /* Configure ADC1_STATUS registers with new value */
     MDR_ADC->ADC1_STATUS = tmpreg_ADC1_IE;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Enables or disables the ADC2 interrupts.
   * @warning This function can be used only for microcontroller series
-  *          MDR32F9Q2I and MDR32FG16S1QI.
-  * @param   ADC_IT - @ref ADC_IT_Def - specifies the ADC2 interrupts sources to be enabled or disabled.
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
+  * @param  ADCx_IT: Specifies the ADC2 interrupts sources to be enabled or disabled.
+  *         This parameter could be any combination of @ref ADCx_IT values.
   * @param   NewState - @ref FunctionalState - new state of the ADC2 interrupts (ENABLE or DISABLE).
   * @retval  None
   */
-void ADC2_ITConfig(ADC_IT_Def ADC_IT, FunctionalState NewState)
+void ADC2_ITConfig(uint32_t ADCx_IT, FunctionalState NewState)
 {
     uint32_t tmpreg_ADC2_IE;
 
     /* Check the parameters */
-    assert_param(IS_ADCx_CONFIG_IT(ADC_IT));
+    assert_param(IS_ADCx_CONFIG_ITS(ADCx_IT));
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-    tmpreg_ADC2_IE = MDR_ADC->ADC2_STATUS;
+    tmpreg_ADC2_IE = MDR_ADC->ADC2_STATUS | (ADCx_FLAG_OVERWRITE | ADCx_FLAG_OVERWRITE);
 
     /* Form new value */
     if (NewState != DISABLE)
     {
         /* Enable the ADC Interrupt requests by setting bits in the ADC2_STATUS register */
-        tmpreg_ADC2_IE |= ((uint32_t)ADC_IT << 2);
+        tmpreg_ADC2_IE |= ADCx_IT;
     }
     else
     {
         /* Disable the ADC Interrupt requests by clearing bits in the ADC2_STATUS register */
-        tmpreg_ADC2_IE &= ~((uint32_t)ADC_IT << 2);
+        tmpreg_ADC2_IE &= ~ADCx_IT;
     }
 
     /* Configure ADC2_STATUS registers with new value */
     MDR_ADC->ADC2_STATUS = tmpreg_ADC2_IE;
 }
-#endif /* #if defined  (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined  (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Checks whether the ADC1, ADC2 interrupt has occurred or not.
-  * @param  ADC_IT - @ref ADC_IT_Def - specifies the ADC interrupt source to check.
+  * @param  ADC_IT: Specifies the ADC interrupt source to check.
+  *         This parameter could be any combination of @ref ADC_IT_Def values.
   * @retval @ref ITStatus - Current state of the ADC_IT (SET or RESET).
   */
-ITStatus ADC_GetITStatus(ADC_IT_Def ADC_IT)
+ITStatus ADC_GetITStatus(uint32_t ADC_IT)
 {
     ITStatus bitstatus;
-    uint32_t tmpreg;
 
     /* Check the parameters */
-    assert_param(IS_ADC_CONFIG_IT(ADC_IT));
+    assert_param(IS_ADC_CONFIG_ITS(ADC_IT));
 
-    tmpreg = ADC_GetStatus();
-    tmpreg &= (tmpreg >> 2) & (uint32_t)ADC_IT;
-
-    if (tmpreg == 0)
+    if ((ADC_GetStatus() & ADC_IT) == 0)
     {
         bitstatus = RESET;
     }
@@ -1049,21 +1047,18 @@ ITStatus ADC_GetITStatus(ADC_IT_Def ADC_IT)
 
 /**
   * @brief  Checks whether the ADC1 interrupt has occurred or not.
-  * @param  ADC_IT - @ref ADC_IT_Def - specifies the ADC interrupt source to check.
-  * @retval @ref ITStatus - Current state of the ADC_IT (SET or RESET).
+  * @param  ADCx_IT: Specifies the ADC1 interrupt source to check.
+  *         This parameter could be any combination of @ref ADCx_IT_Def values.
+  * @retval @ref ITStatus - Current state of the ADCx_IT (SET or RESET).
   */
-ITStatus ADC1_GetITStatus(ADC_IT_Def ADC_IT)
+ITStatus ADC1_GetITStatus(uint32_t ADCx_IT)
 {
     ITStatus bitstatus;
-    uint32_t tmpreg;
 
     /* Check the parameters */
-    assert_param(IS_ADCx_CONFIG_IT(ADC_IT));
+    assert_param(IS_ADCx_CONFIG_ITS(ADCx_IT));
 
-    tmpreg = MDR_ADC->ADC1_STATUS;
-    tmpreg &= (tmpreg >> 2) & (uint32_t)ADC_IT;
-
-    if (tmpreg == 0)
+    if ((MDR_ADC->ADC1_STATUS & ADCx_IT) == 0)
     {
         bitstatus = RESET;
     }
@@ -1075,26 +1070,23 @@ ITStatus ADC1_GetITStatus(ADC_IT_Def ADC_IT)
   return bitstatus;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Checks whether the ADC2 interrupt has occurred or not.
   * @warning This function can be used only for microcontroller
-  *          MDR32F9Q2I and MDR32FG16S1QI
-  * @param   ADC_IT - @ref ADC_IT_Def - specifies the ADC interrupt source to check.
-  * @retval  @ref ITStatus - Current state of the ADC_IT (SET or RESET).
+  *          MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI.
+  * @param   ADCx_IT: Specifies the ADC2 interrupt source to check.
+  *          This parameter could be any combination of @ref ADCx_IT_Def values.
+  * @retval  @ref ITStatus - Current state of the ADCx_IT (SET or RESET).
   */
-ITStatus ADC2_GetITStatus(ADC_IT_Def ADC_IT)
+ITStatus ADC2_GetITStatus(uint32_t ADCx_IT)
 {
     ITStatus bitstatus;
-    uint32_t tmpreg;
 
     /* Check the parameters */
-    assert_param(IS_ADCx_CONFIG_IT(ADC_IT));
+    assert_param(IS_ADCx_CONFIG_ITS(ADCx_IT));
 
-    tmpreg = MDR_ADC->ADC2_STATUS;
-    tmpreg &= (tmpreg >> 2) & (uint32_t)ADC_IT;
-
-    if (tmpreg == 0)
+    if ((MDR_ADC->ADC2_STATUS & ADCx_IT) == 0)
     {
         bitstatus = RESET;
     }
@@ -1105,16 +1097,15 @@ ITStatus ADC2_GetITStatus(ADC_IT_Def ADC_IT)
 
     return bitstatus;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
-/** @} */ /* End of group ADC_Private_Functions */
+/** @} */ /* End of group ADC_Exported_Functions */
 
 /** @} */ /* End of group ADC */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_adc.c */
-
 

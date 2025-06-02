@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_arinc429t.h
   * @author  Milandr Application Team
-  * @version V2.0.0i
-  * @date    10/03/2022
+  * @version V2.0.2i
+  * @date    24/07/2024
   * @brief   This file contains all the functions prototypes for the ARINC429T
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -36,11 +36,11 @@ extern "C" {
   */
 
 /** @addtogroup ARINC429T ARINC429T
-  * @warning This module can be used only for microcontrollers MDR32F1QI.
+  * @warning This module can be used only for microcontrollers MDR32F1QI, K1986VE1xI.
   * @{
   */
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
 
 /** @defgroup ARINC429T_Exported_Types ARINC429T Exported Types
   * @{
@@ -81,8 +81,7 @@ typedef enum
     ARINC429T_CHANNEL4 = ((uint32_t)0x3)
 } ARINC429T_Channel;
 
-#define IS_ARINC429T_CHANNEL(CHANNELx)  (((CHANNELx) >= ARINC429T_CHANNEL1 ) && \
-                                         ((CHANNELx) <= ARINC429T_CHANNEL4 ))
+#define IS_ARINC429T_CHANNEL(CHANNELx)  (((CHANNELx) & ~0x3) == 0)
 
 /**
   * @brief ARINC429T Interrupt Defintion
@@ -161,7 +160,7 @@ void ARINC429T_SendData(ARINC429T_Channel ARINC429T_CHANNELx, uint32_t Data);
 
 /** @} */ /* End of group ARINC429T_Exported_Funstions */
 
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
 /** @} */ /* End of group ARINC429T */
 
@@ -173,8 +172,7 @@ void ARINC429T_SendData(ARINC429T_Channel ARINC429T_CHANNELx, uint32_t Data);
 
 #endif /* MDR32FxQI_ARINC429T_H_ */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_arinc429t.h */
-
 

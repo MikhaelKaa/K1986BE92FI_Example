@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_audio.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    17/03/2022
+  * @version V2.1.0i
+  * @date    29/06/2023
   * @brief   This file contains all the AUDIO_IP firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -32,7 +32,7 @@
   * @{
   */
 
-/** @defgroup AUDIO_IP_Private_Functions AUDIO_IP Private Functions
+/** @defgroup AUDIO_IP_Exported_Functions AUDIO_IP Exported Functions
   * @{
   */
 
@@ -64,13 +64,13 @@ void AUDIO_IP_StructInit(AUDIO_IP_InitTypeDef* AUDIO_IP_InitStruct)
     AUDIO_IP_InitStruct->DigitalLoopBackMode        = DISABLE;
 
     /* ADC control */
-    AUDIO_IP_InitStruct->ADGain                     = 0x2A;
+    AUDIO_IP_InitStruct->ADGain                     = AUDIO_IP_ADGain_0dB;
     AUDIO_IP_InitStruct->ADCInputAmplifier          = AUDIO_IP_ADC_INPUT_AMPLIFIER_LEVEL_0_DB;
     AUDIO_IP_InitStruct->ADCAnalogInput             = AUDIO_IP_ANALOG_INPUT_SOURCE_INP1;
     AUDIO_IP_InitStruct->ADCInputControl            = DISABLE;
 
     /* DAC control */
-    AUDIO_IP_InitStruct->DAGain                     = 0x2A;
+    AUDIO_IP_InitStruct->DAGain                     = AUDIO_IP_DAGain_0dB;
     AUDIO_IP_InitStruct->DACMute                    = DISABLE;
     AUDIO_IP_InitStruct->DACOutputAmplifier         = DISABLE;
     AUDIO_IP_InitStruct->DACBIASOffsetSchemeState   = DISABLE;
@@ -179,10 +179,10 @@ void AUDIO_IP_DACCmd(FunctionalState NewState)
 
 /**
   * @brief  Set the new value of the ADC gain.
-  * @param  GainValue: new vale of of the ADC gain.
+  * @param  GainValue - @ref AUDIO_IP_ADGain - new value of of the ADC gain.
   * @retval None.
   */
-void AUDIO_IP_SetADGain(uint32_t GainValue)
+void AUDIO_IP_SetADGain(AUDIO_IP_ADGain GainValue)
 {
     uint32_t tmpreg;
 
@@ -196,10 +196,10 @@ void AUDIO_IP_SetADGain(uint32_t GainValue)
 
 /**
   * @brief  Set the new value of the DAC gain.
-  * @param  GainValue: new vale of of the DAC gain.
+  * @param  GainValue - @ref AUDIO_IP_DAGain - new value of of the DAC gain.
   * @retval None.
   */
-void AUDIO_IP_SetDAGain(uint32_t GainValue)
+void AUDIO_IP_SetDAGain(AUDIO_IP_DAGain GainValue)
 {
     uint32_t tmpreg;
 
@@ -393,15 +393,14 @@ void AUDIO_IP_SendData(uint16_t AudioData)
     MDR_AUDIO_IP->DACREG = AudioData & 0x0000FFFF;
 }
 
-/** @} */ /* End of group AUDIO_IP_Private_Functions */
+/** @} */ /* End of group AUDIO_IP_Exported_Functions */
 
 /** @} */ /* End of group AUDIO_IP */
 #endif /* defined (USE_MDR32FG16S1QI) */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_audio.c */
-
 

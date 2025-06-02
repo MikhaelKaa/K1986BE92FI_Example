@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_usb.h
   * @author  Milandr Application Team
-  * @version V2.0.0i
-  * @date    14/03/2022
+  * @version V2.0.1i
+  * @date    03/06/2024
   * @brief   This file contains all the functions prototypes for the USB
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -55,7 +55,7 @@ typedef enum
     Num_USB_EndPoints
 } USB_EP_TypeDef;
 
-#define IS_USB_ENDPOINT(ENDPOINT)       (((ENDPOINT) >= 0) && ((ENDPOINT) < Num_USB_EndPoints))
+#define IS_USB_ENDPOINT(ENDPOINT)       (((ENDPOINT) & ~0x3) == 0)
 
 /**
   * @brief USB USBC1 Source
@@ -68,7 +68,7 @@ typedef enum
     USB_C1HSEdiv2 = ((uint32_t)0x03)
 } USB_C1_Source_TypeDef;
 
-#define IS_USBC1_CLOCK_BRG(CLOCK)      (((CLOCK) >= 0) && ((CLOCK) <= 3))
+#define IS_USBC1_CLOCK_BRG(CLOCK)      (((CLOCK) & ~0x3) == 0)
 
 /**
   * @brief USB PLLUSB Source
@@ -76,8 +76,10 @@ typedef enum
 typedef enum
 {
     USB_PLLUSBMUL1  = ((uint32_t)0x00),
+#if defined (USE_MDR32F9xI) || defined (USE_MDR32F1QI) || defined (USE_MDR32FG16S1QI)
     USB_PLLUSBMUL2  = ((uint32_t)0x01),
     USB_PLLUSBMUL3  = ((uint32_t)0x02),
+#endif
     USB_PLLUSBMUL4  = ((uint32_t)0x03),
     USB_PLLUSBMUL5  = ((uint32_t)0x04),
     USB_PLLUSBMUL6  = ((uint32_t)0x05),
@@ -93,8 +95,12 @@ typedef enum
     USB_PLLUSBMUL16 = ((uint32_t)0x0F)
 } USB_PLL_Source_TypeDef;
 
-#define IS_PLLUSBMUL(MUL)              (((MUL) >= 0) && ((MUL) < 16))
-
+#if defined (USE_MDR32F9xI) || defined (USE_MDR32F1QI) || defined (USE_MDR32FG16S1QI)
+    #define IS_PLLUSBMUL(MUL)    (((MUL) & ~0xF) == 0)
+#else
+    #define IS_PLLUSBMUL(MUL)    (((MUL) == 0) || \
+                                 (((MUL) >= 0x03) && ((MUL) <= 0x0F)))
+#endif
 
 /**
   * @brief USB Clock Init Structure definition
@@ -723,7 +729,7 @@ void USB_SEPxToggleEPDATASEQ(USB_EP_TypeDef EndPointNumber);
 
 #endif /* __MDR32FxQI_USB_H */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_usb.h */
 

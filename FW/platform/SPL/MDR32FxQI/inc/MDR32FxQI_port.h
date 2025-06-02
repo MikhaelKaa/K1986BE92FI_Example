@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_port.h
   * @author  Milandr Application Team
-  * @version V2.0.0i
-  * @date    10/03/2022
+  * @version V2.0.1i
+  * @date    07/07/2023
   * @brief   This file contains all the functions prototypes for the PORT
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -234,16 +234,24 @@ typedef struct
 
 #if defined (USE_JTAG_A)
     #define PORT_JTAG                   MDR_PORTB    /*!< Port containing JTAG interface */
-    #define PORT_JTAG_Msk               0x001FU      /*!< JTAG pins */
+    #define PORT_JTAG_Msk               0x0000001FU  /*!< JTAG pins: OE, ANALOG, GFEN mask */
+    #define PORT_JTAG_Msk2              0x000003FFU  /*!< JTAG pins: FUNC, PWR mask */
+    #define PORT_JTAG_Msk3              0x001F001FU  /*!< JTAG pins: PULL, PD mask */
 #elif defined (USE_JTAG_B)
     #define PORT_JTAG                   MDR_PORTD    /*!< Port containing JTAG interface */
-    #define PORT_JTAG_Msk               0x001FU      /*!< JTAG pins */
+    #define PORT_JTAG_Msk               0x0000001FU  /*!< JTAG pins: OE, ANALOG, GFEN mask */
+    #define PORT_JTAG_Msk2              0x000003FFU  /*!< JTAG pins: FUNC, PWR mask */
+    #define PORT_JTAG_Msk3              0x001F001FU  /*!< JTAG pins: PULL, PD mask */
 #endif
 
 #if defined (PORT_JTAG)
     #define JTAG_PINS(MDR_PORT)         (((MDR_PORT) == PORT_JTAG) ? PORT_JTAG_Msk : 0)
+    #define JTAG_PINS2(MDR_PORT)        (((MDR_PORT) == PORT_JTAG) ? PORT_JTAG_Msk2 : 0)
+    #define JTAG_PINS3(MDR_PORT)        (((MDR_PORT) == PORT_JTAG) ? PORT_JTAG_Msk3 : 0)
 #else
     #define JTAG_PINS(MDR_PORT)         0
+    #define JTAG_PINS2(MDR_PORT)        0
+    #define JTAG_PINS3(MDR_PORT)        0
 #endif
 
 #define IS_NOT_JTAG_PIN(MDR_PORT, PIN)  (((PIN) & JTAG_PINS(MDR_PORT)) == 0x00)
@@ -282,7 +290,7 @@ void PORT_Write(MDR_PORT_TypeDef* MDR_PORTx, uint32_t PortVal);
 
 #endif /* __MDR32FxQI_PORT_H */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_port.h */
 

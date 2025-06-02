@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_ebc.h
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    10/03/2022
+  * @version V2.1.1i
+  * @date    23/03/2024
   * @brief   This file contains all the functions prototypes for the EBC
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -128,7 +128,7 @@ typedef enum
 #define IS_EBC_NAND_CYCLES(NAND_CYCLES) (((NAND_CYCLES) & ~EBC_NAND_CYCLES_MSK) == 0)
 
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI) || (defined (USE_K1986VE9xI) && !defined(USE_MDR32F9xI))
 
 /**
   * @brief EBC Data Alignment
@@ -140,9 +140,9 @@ typedef enum
     EBC_EBC_DATA_ALIGNMENT_16  = ((uint32_t)0x40)  /*!< Data alignment to 16 junior ranks EBC */
 } EBC_Data_Alignment;
 
-#define IS_EBC_DATA_ALIGNMENT(EBC_DATA_ALIGNMENT)  ((EBC_DATA_ALIGNMENT == EBC_EBC_DATA_ALIGNMENT_OFF) || \
-                                                    (EBC_DATA_ALIGNMENT == EBC_EBC_DATA_ALIGNMENT_8)   || \
-                                                    (EBC_DATA_ALIGNMENT == EBC_EBC_DATA_ALIGNMENT_16))
+#define IS_EBC_DATA_ALIGNMENT(EBC_DATA_ALIGNMENT)  (((EBC_DATA_ALIGNMENT) == EBC_EBC_DATA_ALIGNMENT_OFF) || \
+                                                    ((EBC_DATA_ALIGNMENT) == EBC_EBC_DATA_ALIGNMENT_8)   || \
+                                                    ((EBC_DATA_ALIGNMENT) == EBC_EBC_DATA_ALIGNMENT_16))
 
 /**
   * @brief EBC Memory Region
@@ -156,11 +156,11 @@ typedef enum
     EBC_USE_MEM_REGION_4    = ((uint32_t)0x8)
 } EBC_Mem_Region_Use;
 
-#define IS_EBC_USE_MEM_REGION(EBC_USE_MEM_REGION)  ((EBC_USE_MEM_REGION == EBC_USE_MEM_REGION_NONE) || \
-                                                    (EBC_USE_MEM_REGION == EBC_USE_MEM_REGION_1)    || \
-                                                    (EBC_USE_MEM_REGION == EBC_USE_MEM_REGION_2)    || \
-                                                    (EBC_USE_MEM_REGION == EBC_USE_MEM_REGION_3)    || \
-                                                    (EBC_USE_MEM_REGION == EBC_USE_MEM_REGION_4))
+#define IS_EBC_USE_MEM_REGION(EBC_USE_MEM_REGION)  (((EBC_USE_MEM_REGION) == EBC_USE_MEM_REGION_NONE) || \
+                                                    ((EBC_USE_MEM_REGION) == EBC_USE_MEM_REGION_1)    || \
+                                                    ((EBC_USE_MEM_REGION) == EBC_USE_MEM_REGION_2)    || \
+                                                    ((EBC_USE_MEM_REGION) == EBC_USE_MEM_REGION_3)    || \
+                                                    ((EBC_USE_MEM_REGION) == EBC_USE_MEM_REGION_4))
 
 /**
   * @brief EBC WS HOLD Cycles
@@ -211,14 +211,14 @@ typedef enum
     EBC_MEM_REGION_70000000 = (uint32_t)(0x03)
 } EBC_Mem_Region_Select;
 
-#define IS_EBC_MEM_REGION(EBC_MEM_REGION)  ((EBC_MEM_REGION == EBC_MEM_REGION_10000000) || \
-                                            (EBC_MEM_REGION == EBC_MEM_REGION_50000000) || \
-                                            (EBC_MEM_REGION == EBC_MEM_REGION_60000000) || \
-                                            (EBC_MEM_REGION == EBC_MEM_REGION_70000000))
+#define IS_EBC_MEM_REGION(EBC_MEM_REGION)  (((EBC_MEM_REGION) == EBC_MEM_REGION_10000000) || \
+                                            ((EBC_MEM_REGION) == EBC_MEM_REGION_50000000) || \
+                                            ((EBC_MEM_REGION) == EBC_MEM_REGION_60000000) || \
+                                            ((EBC_MEM_REGION) == EBC_MEM_REGION_70000000))
 
-#define IS_EBC_WS_ACTIVE(WS_ACTIVE)        ((WS_ACTIVE >= 0) && (WS_ACTIVE < 127))
+#define IS_EBC_WS_ACTIVE(WS_ACTIVE)        (((WS_ACTIVE) & ~0x7F) == 0)
 
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) || (defined (USE_K1986VE9xI) && !defined(USE_MDR32F9xI)) */
 
 /**
   * @brief EBC Init structure definition
@@ -245,15 +245,15 @@ typedef struct
                                                This parameter can be a value of @ref EBC_NAND_Cycles. */
     EBC_NAND_Cycles    EBC_NandTrr;       /*!< Specifies NAND delay from Busy release to read operation.
                                                This parameter can be a value of @ref EBC_NAND_Cycles. */
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI) || (defined (USE_K1986VE9xI) && !defined(USE_MDR32F9xI))
     EBC_Data_Alignment EBC_DataAlignment; /*!< Specifies data Alignment.
                                                This parameter can be a value of @ref EBC_Data_Alignment. */
     EBC_Mem_Region_Use EBC_UseMemRegion;  /*!< Specifies resolution settings of exchange of the appropriate range of addresses.
                                                This parameter can be value of @ref EBC_Mem_Region_Use. */
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) || (defined (USE_K1986VE9xI) && !defined(USE_MDR32F9xI)) */
 } EBC_InitTypeDef;
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI) || (defined (USE_K1986VE9xI) && !defined(USE_MDR32F9xI))
 /**
  *  @brief EBC RAM RAM_Cycles structure definition
  */
@@ -271,7 +271,7 @@ typedef struct
                                           This parameter can be a value of @ref FunctionalState */
 } EBC_MemRegionInitTypeDef;
 
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) || (defined (USE_K1986VE9xI) && !defined(USE_MDR32F9xI)) */
 
 /** @} */ /* End of group EBC_Exported_Types */
 
@@ -286,7 +286,7 @@ void EBC_StructInit(EBC_InitTypeDef* EBC_InitStruct);
 uint32_t EBC_CalcWaitStates(uint32_t HCLK_Frequency_KHz, uint32_t Time_ns);
 uint32_t EBC_CalcNandCycles(uint32_t HCLK_Frequency_KHz, uint32_t Time_ns);
 FlagStatus EBC_GetBusyStatus(void);
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI) || (defined (USE_K1986VE9xI) && !defined(USE_MDR32F9xI))
     void EBC_MemRegionStructInit(EBC_MemRegionInitTypeDef* EBC_MemRegionInitStruct);
     void EBC_MemRegionInit(EBC_MemRegionInitTypeDef* EBC_MemRegionInitStruct, EBC_Mem_Region_Select EBC_MEM_REGIONx);
     void EBC_MemRegionCMD(EBC_Mem_Region_Select EBC_MEM_REGIONx, FunctionalState NewState);
@@ -304,7 +304,7 @@ FlagStatus EBC_GetBusyStatus(void);
 
 #endif /* __MDR32FxQI_EBC_H */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_ebc.h */
 

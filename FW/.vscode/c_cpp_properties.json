@@ -8,7 +8,6 @@
                 "C:/arm_tool/gcc/arm-none-eabi/include/sys/",
                 "C:/arm_tool/gcc/lib/**",
                 "${workspaceRoot}\\platform\\**",
-                "${workspaceFolder}/platform/K1986BE92FI/Include",
                 "${workspaceFolder}/platform/SPL/MDR32FxQI",
                 "${workspaceFolder}/platform/SPL/MDR32FxQI/inc",
                 "${workspaceFolder}/app/retarget",
@@ -19,8 +18,7 @@
             ],
             "defines": [
                 "HSE_Value=8000000",
-                "USE_MDR1986VE9x",
-                "USE_MDR32F9Q2I",
+                "USE_K1986VE92xI",
                 "ITERATIONS=4096",
                 "CLOCKS_PER_SEC=1000",
                 "COREMARK_TIME=millis"

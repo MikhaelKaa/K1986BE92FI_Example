@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_dma.h
   * @author  Milandr Application Team
-  * @version V2.0.0i
-  * @date    10/03/2022
+  * @version V2.2.1i
+  * @date    23/03/2024
   * @brief   This file contains all the functions prototypes for the DMA
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -43,14 +43,6 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup DMA_channels_number DMA channels number
-  * @{
-  */
-
-#define IS_DMA_CHANNELS(NUMBER) (((NUMBER) >= 1) && ((NUMBER) <= 32))
-
-/** @} */ /* End of group DMA_channels_number */
-
 /**
   * @brief DMA alternate data usage
   */
@@ -68,7 +60,7 @@ typedef enum
   */
 typedef enum
 {
-#if defined (USE_MDR32F9Q2I)
+#if defined (USE_K1986VE9xI)
     DMA_Channel_UART1_TX = ((uint8_t)(0)),
     DMA_Channel_UART1_RX = ((uint8_t)(1)),
     DMA_Channel_UART2_TX = ((uint8_t)(2)),
@@ -101,7 +93,7 @@ typedef enum
     DMA_Channel_SW17     = ((uint8_t)(29)),
     DMA_Channel_SW18     = ((uint8_t)(30)),
     DMA_Channel_SW19     = ((uint8_t)(31)),
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
 /*-- req DMA request ---------------------------------------------------------*/
     DMA_Channel_REQ_UART1_TX = ((uint8_t)(0)),
     DMA_Channel_REQ_UART1_RX = ((uint8_t)(1)),
@@ -305,14 +297,6 @@ typedef enum
                             ((MODE) == DMA_Mode_PerScatterAlt) || \
                             ((MODE) == DMA_Mode_PerScatterAltBurst))
 
-/** @addtogroup DMA_cycle_size DMA cycle size
-  * @{
-  */
-
-#define IS_DMA_CYCLE_SIZE(SIZE)  (((SIZE) >= 1) && ((SIZE) <= 1024))
-
-/** @} */ /* End of group DMA_cycle_size */
-
 /**
   * @brief DMA priority level
   */
@@ -360,14 +344,6 @@ typedef enum
 } DMA_Dest_Protection_Control;
 
 #define IS_DMA_DEST_PROT(STATE)  (((STATE) & (~(0x7 << 21))) == 0)
-
-/** @addtogroup DMA_Control_Minus_1 DMA Control Minus 1
-  * @{
-  */
-
-#define DMA_CONTROL_MINUS_1  ((uint32_t)0x3FF0)  /*!< DMA control "n_minus_1" field mask */
-
-/** @} */ /* End of group DMA_Control_Minus_1 */
 
 /**
   * @brief DMA AHB-Lite protection control
@@ -534,6 +510,49 @@ typedef struct
 /** @} */ /* End of group DMA_Exported_Types */
 
 
+/** @defgroup DMA_Exported_Constants DMA Exported Constants
+  * @{
+  */
+
+/** @defgroup DMA_channels_number DMA channels number
+  * @{
+  */
+
+#define IS_DMA_CHANNELS(NUMBER) (((NUMBER) >= 1) && ((NUMBER) <= 32))
+
+/** @} */ /* End of group DMA_channels_number */
+
+/** @defgroup DMA_cycle_size DMA cycle size
+  * @{
+  */
+
+#define IS_DMA_CYCLE_SIZE(SIZE)   (((SIZE) >= 1) && ((SIZE) <= 1024))
+
+/** @} */ /* End of group DMA_cycle_size */
+
+/** @defgroup DMA_Control_Minus_1 DMA Control Minus 1
+  * @{
+  */
+
+#define DMA_CONTROL_MINUS_1  ((uint32_t)0x3FF0)  /*!< DMA control "n_minus_1" field mask */
+
+/** @} */ /* End of group DMA_Control_Minus_1 */
+
+/** @} */ /* End of group DMA_Exported_Constants */
+
+
+/** @addtogroup DMA_Exported_Variables DMA Exported Variables
+ * @{
+ */
+
+/**
+ * @brief DMA Channel Control Data Table
+ */
+extern DMA_CtrlDataTypeDef DMA_ControlTable[];
+
+/** @} */ /* End of group DMA_Exported_Variables */
+
+
 /** @addtogroup DMA_Exported_Functions DMA Exported Functions
   * @{
   */
@@ -555,6 +574,9 @@ void DMA_Cmd(uint8_t DMA_Channel, FunctionalState NewState);
 void DMA_Request(uint8_t DMA_Channel);
 void DMA_ClearError(void);
 
+void DMA_ChannelReloadCycle(uint8_t DMA_Channel, DMA_Data_Struct_Selection SelectDataStruct,
+                            uint32_t CycleSize, DMA_Operating_Mode ChannelMode);
+
 uint32_t DMA_GetCurrTransferCounter(uint8_t DMA_Channel, DMA_Data_Struct_Selection DMA_CtrlData);
 
 FlagStatus DMA_GetFlagStatus(uint8_t DMA_Channel, DMA_Flags DMA_Flag);
@@ -571,7 +593,7 @@ FlagStatus DMA_GetFlagStatus(uint8_t DMA_Channel, DMA_Flags DMA_Flag);
 
 #endif /* __MDR32FxQI_DMA_H */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_dma.h */
 

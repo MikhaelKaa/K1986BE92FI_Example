@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_timer.h
   * @author  Milandr Application Team
-  * @version V2.0.0i
-  * @date    14/03/2022
+  * @version V2.2.1i
+  * @date    24/03/2024
   * @brief   This file contains all the functions prototypes for the TIMER
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -262,28 +262,29 @@ typedef enum
   */
 typedef enum
 {
-    TIMER_CH_REF_Format0 = (((uint32_t)0x0) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF is equal to 0 */
-    TIMER_CH_REF_Format1 = (((uint32_t)0x1) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF is equal to 1 if:
-                                                                             (CNT == CCR) or
-                                                                             ((CNT == CCR1) and CCR1 enabled),
-                                                                             else REF is equal to 0. */
-    TIMER_CH_REF_Format2 = (((uint32_t)0x2) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF is equal to 0 if:
-                                                                              (CNT == CCR) or
-                                                                              ((CNT == CCR1) and CCR1 enabled),
-                                                                              else REF is equal to 1. */
-    TIMER_CH_REF_Format3 = (((uint32_t)0x3) << TIMER_CH_CNTRL_OCCM_Pos), /*!< Toggle REF state if:
-                                                                              (CNT == CCR) or
-                                                                              ((CNT == CCR1) and CCR1 enabled). */
-    TIMER_CH_REF_Format4 = (((uint32_t)0x4) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF is equal to 0. */
-    TIMER_CH_REF_Format5 = (((uint32_t)0x5) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF is equal to 1. */
-    TIMER_CH_REF_Format6 = (((uint32_t)0x6) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF is equal to inverted DIR state if:
-                                                                              (CCR1 disabled and (CNT < CCR)) or
-                                                                              (CCR1 enabled  and (CCR < CNT < CCR1 ) (if CCR1 > CCR)),
-                                                                              else REF is equal to DIR state. */
-    TIMER_CH_REF_Format7 = (((uint32_t)0x7) << TIMER_CH_CNTRL_OCCM_Pos)  /*!< REF is equal to DIR state if:
-                                                                              (CCR1 disabled and (CNT < CCR)) or
-                                                                              (CCR1 enabled  and (CCR < CNT < CCR1 ) (if CCR1 > CCR)),
-                                                                              else REF is equal to inverted DIR state. */
+    TIMER_CH_REF_Format0 = (((uint32_t)0x0) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF = 0. */
+    TIMER_CH_REF_Format1 = (((uint32_t)0x1) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF = 1 if: (CNT == CCR) or ((CNT == CCR1) and CCR1_EN = 1),
+                                                                              else REF = 0. */
+    TIMER_CH_REF_Format2 = (((uint32_t)0x2) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF = 0 if: (CNT == CCR) or ((CNT == CCR1) and CCR1_EN = 1),
+                                                                              else REF = 1. */
+    TIMER_CH_REF_Format3 = (((uint32_t)0x3) << TIMER_CH_CNTRL_OCCM_Pos), /*!< Toggle REF state if: (CNT == CCR) or 
+                                                                              ((CNT == CCR1) and CCR1_EN = 1). */
+    TIMER_CH_REF_Format4 = (((uint32_t)0x4) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF = 0. */
+    TIMER_CH_REF_Format5 = (((uint32_t)0x5) << TIMER_CH_CNTRL_OCCM_Pos), /*!< REF = 1. */
+    TIMER_CH_REF_Format6 = (((uint32_t)0x6) << TIMER_CH_CNTRL_OCCM_Pos), /*!< If CCR1_EN = 0:
+                                                                                 DIR = 0: REF = 1 if (CNT < CCR), else REF = 0,
+                                                                                 DIR = 1: REF = 0 if (CNT > CCR), else REF = 1,
+                                                                              else if CCR1_EN = 1:
+                                                                                 DIR = 0: REF = 0 if (CCR ≤ CNT ≤ CCR1), else REF = 1,
+                                                                                 DIR = 1: REF = 0 if (CCR < CNT < CCR1), else REF = 1.
+                                                                              The condition (CCR < CCR1) must be observed. */
+    TIMER_CH_REF_Format7 = (((uint32_t)0x7) << TIMER_CH_CNTRL_OCCM_Pos)  /*!<  If CCR1_EN = 0:
+                                                                                 DIR = 0: REF = 0 if (CNT < CCR), else REF = 1,
+                                                                                 DIR = 1: REF = 1 if (CNT > CCR), else REF = 0,
+                                                                              else if CCR1_EN = 1:
+                                                                                 DIR = 0: REF = 1 if (CCR ≤ CNT ≤ CCR1), else REF = 0,
+                                                                                 DIR = 1: REF = 1 if (CCR < CNT < CCR1), else REF = 0.
+                                                                              The condition (CCR < CCR1) must be observed. */
 } TIMER_CH_REF_Format_TypeDef;
 
 #define IS_TIMER_CHANNEL_REF_FORMAT(FORMAT) (((FORMAT) == TIMER_CH_REF_Format0) || \
@@ -374,7 +375,7 @@ typedef enum
 {
     TIMER_CH_OutSrc_Only_0 = ((uint32_t)0x0), /*!< Selects the '0' state on the CHx (or CHxN) line. */
     TIMER_CH_OutSrc_Only_1 = ((uint32_t)0x1), /*!< Selects the '1' state on the CHx (or CHxN) line. */
-    TIMER_CH_OutSrc_REF    = ((uint32_t)0x2), /*!< Selects the REF state on the CHx (or CHxN) line. */
+    TIMER_CH_OutSrc_REF    = ((uint32_t)0x2), /*!< Selects the REF state on the CHx line or the nREF state on the CHxN line. */
     TIMER_CH_OutSrc_DTG    = ((uint32_t)0x3)  /*!< Selects the DTG output state on the CHx (or CHxN) line. */
 } TIMER_CH_OUT_Src_TypeDef;
 
@@ -390,7 +391,7 @@ typedef enum
 {
     TIMER_CH_OutMode_Input     = ((uint32_t)0x0), /*!< Selects the Input mode on the CHx (or CHxN) line. */
     TIMER_CH_OutMode_Output    = ((uint32_t)0x1), /*!< Selects the Output mode on the CHx (or CHxN) line. */
-    TIMER_CH_OutMode_REF_as_OE = ((uint32_t)0x2), /*!< The REF signal specifies the CHx (or CHxN) line mode. */
+    TIMER_CH_OutMode_REF_as_OE = ((uint32_t)0x2), /*!< The REF signal specifies the CHx line mode or the nREF signal specifies the CHxN line mode. */
     TIMER_CH_OutMode_DTG_as_OE = ((uint32_t)0x3)  /*!< The DTG output specifies the CHx (or CHxN) line mode. */
 } TIMER_CH_OUT_Mode_TypeDef;
 
@@ -416,23 +417,23 @@ typedef enum
   */
 typedef enum
 {
-    TIMER_STATUS_CNT_ZERO         = (((uint32_t)0x1) <<  0), /*!< The (CNT == 0) condition occured. */
-    TIMER_STATUS_CNT_ARR          = (((uint32_t)0x1) <<  1), /*!< The (CNT == ARR) condition occured. */
-    TIMER_STATUS_ETR_RISING_EDGE  = (((uint32_t)0x1) <<  2), /*!< The ETR rising edge occured. */
-    TIMER_STATUS_ETR_FALLING_EDGE = (((uint32_t)0x1) <<  3), /*!< The ETR falling edge occured. */
-    TIMER_STATUS_BRK              = (((uint32_t)0x1) <<  4), /*!< The (BRK == 1) condition occured. */
-    TIMER_STATUS_CCR_CAP_CH1      = (((uint32_t)0x1) <<  5), /*!< The Channel 1 CCR capture condition occured. */
-    TIMER_STATUS_CCR_CAP_CH2      = (((uint32_t)0x1) <<  6), /*!< The Channel 2 CCR capture condition occured. */
-    TIMER_STATUS_CCR_CAP_CH3      = (((uint32_t)0x1) <<  7), /*!< The Channel 3 CCR capture condition occured. */
-    TIMER_STATUS_CCR_CAP_CH4      = (((uint32_t)0x1) <<  8), /*!< The Channel 4 CCR capture condition occured. */
-    TIMER_STATUS_CCR_REF_CH1      = (((uint32_t)0x1) <<  9), /*!< The Channel 1 (REF == 1) condition occured. */
-    TIMER_STATUS_CCR_REF_CH2      = (((uint32_t)0x1) << 10), /*!< The Channel 2 (REF == 1) condition occured. */
-    TIMER_STATUS_CCR_REF_CH3      = (((uint32_t)0x1) << 11), /*!< The Channel 3 (REF == 1) condition occured. */
-    TIMER_STATUS_CCR_REF_CH4      = (((uint32_t)0x1) << 12), /*!< The Channel 4 (REF == 1) condition occured. */
-    TIMER_STATUS_CCR_CAP1_CH1     = (((uint32_t)0x1) << 13), /*!< The Channel 1 CCR1 capture condition occured. */
-    TIMER_STATUS_CCR_CAP1_CH2     = (((uint32_t)0x1) << 14), /*!< The Channel 2 CCR1 capture condition occured. */
-    TIMER_STATUS_CCR_CAP1_CH3     = (((uint32_t)0x1) << 15), /*!< The Channel 3 CCR1 capture condition occured. */
-    TIMER_STATUS_CCR_CAP1_CH4     = (((uint32_t)0x1) << 16)  /*!< The Channel 4 CCR1 capture condition occured. */
+    TIMER_STATUS_CNT_ZERO         = (((uint32_t)0x1) <<  0), /*!< The (CNT == 0) condition occurred. */
+    TIMER_STATUS_CNT_ARR          = (((uint32_t)0x1) <<  1), /*!< The (CNT == ARR) condition occurred. */
+    TIMER_STATUS_ETR_RISING_EDGE  = (((uint32_t)0x1) <<  2), /*!< The ETR rising edge occurred. */
+    TIMER_STATUS_ETR_FALLING_EDGE = (((uint32_t)0x1) <<  3), /*!< The ETR falling edge occurred. */
+    TIMER_STATUS_BRK              = (((uint32_t)0x1) <<  4), /*!< The (BRK == 1) condition occurred. */
+    TIMER_STATUS_CCR_CAP_CH1      = (((uint32_t)0x1) <<  5), /*!< The Channel 1 CCR capture condition occurred. */
+    TIMER_STATUS_CCR_CAP_CH2      = (((uint32_t)0x1) <<  6), /*!< The Channel 2 CCR capture condition occurred. */
+    TIMER_STATUS_CCR_CAP_CH3      = (((uint32_t)0x1) <<  7), /*!< The Channel 3 CCR capture condition occurred. */
+    TIMER_STATUS_CCR_CAP_CH4      = (((uint32_t)0x1) <<  8), /*!< The Channel 4 CCR capture condition occurred. */
+    TIMER_STATUS_CCR_REF_CH1      = (((uint32_t)0x1) <<  9), /*!< The Channel 1 (REF == 1) condition occurred. */
+    TIMER_STATUS_CCR_REF_CH2      = (((uint32_t)0x1) << 10), /*!< The Channel 2 (REF == 1) condition occurred. */
+    TIMER_STATUS_CCR_REF_CH3      = (((uint32_t)0x1) << 11), /*!< The Channel 3 (REF == 1) condition occurred. */
+    TIMER_STATUS_CCR_REF_CH4      = (((uint32_t)0x1) << 12), /*!< The Channel 4 (REF == 1) condition occurred. */
+    TIMER_STATUS_CCR_CAP1_CH1     = (((uint32_t)0x1) << 13), /*!< The Channel 1 CCR1 capture condition occurred. */
+    TIMER_STATUS_CCR_CAP1_CH2     = (((uint32_t)0x1) << 14), /*!< The Channel 2 CCR1 capture condition occurred. */
+    TIMER_STATUS_CCR_CAP1_CH3     = (((uint32_t)0x1) << 15), /*!< The Channel 3 CCR1 capture condition occurred. */
+    TIMER_STATUS_CCR_CAP1_CH4     = (((uint32_t)0x1) << 16)  /*!< The Channel 4 CCR1 capture condition occurred. */
 } TIMER_Status_Flags_TypeDef;
 
 #define TIMER_STATUS_Msk            (TIMER_STATUS_CNT_ZERO         | \
@@ -473,10 +474,10 @@ typedef enum
 
 #define IS_TIMER_STATUS(STATUS)    (((STATUS) & TIMER_STATUS_Msk) == (STATUS))
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
 /**
   * @brief TIMER DMA Channels
-  * @note Available only for MCU MDR32F1QI
+  * @note Available only for MCU MDR32F1QI, K1986VE1xI
   */
 typedef enum
 {
@@ -493,7 +494,7 @@ typedef enum
                                              (DMA_Channel == TIMER_DMA_Channel3) || \
                                              (DMA_Channel == TIMER_DMA_Channel4))
 
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
 /**
   * @brief TIMER Clock BRG
@@ -525,24 +526,24 @@ typedef enum
   */
 typedef struct
 {
-#if defined(USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined(USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     uint16_t TIMER_IniCounter;       /*!< Specifies the initial counter value.
                                           This parameter can be a number between 0x0000 and 0xFFFF. */
-#elif defined (USE_MDR32F1QI)
-    uint32_t TIMER_IniCounter;       /*!< Specifies the initial counter value.
-                                          This parameter can be a number between 0x0000 and 0xFFFFFFFF. */
-#endif
     uint16_t TIMER_Prescaler;        /*!< Specifies the prescaler value used to divide the TIMER clock.
                                           This parameter can be a number between 0x0000 and 0xFFFF.
                                           CLK = TIMER_CLK/(TIMER_Prescaler + 1) */
-#if defined(USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
     uint16_t TIMER_Period;           /*!< Specifies the period = ARR + 1 value to be loaded into the
                                           Auto-Reload Register (ARR) at the next update event.
                                           This parameter must be a number between 0x0000 and 0xFFFF.  */
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
+    uint32_t TIMER_IniCounter;       /*!< Specifies the initial counter value.
+                                          This parameter can be a number between 0x00000000 and 0xFFFFFFFF. */
+    uint32_t TIMER_Prescaler;        /*!< Specifies the prescaler value used to divide the TIMER clock.
+                                          This parameter can be a number between 0x00000000 and 0xFFFFFFFF.
+                                          CLK = TIMER_CLK/(TIMER_Prescaler + 1) */
     uint32_t TIMER_Period;           /*!< Specifies the period = ARR + 1 value to be loaded into the
                                           Auto-Reload Register (ARR) at the next update event.
-                                          This parameter must be a number between 0x0000 and 0xFFFFFFFF.  */
+                                          This parameter must be a number between 0x00000000 and 0xFFFFFFFF. */
 #endif
     uint16_t TIMER_CounterMode;      /*!< Specifies the counter mode.
                                           This parameter can be a value of @ref TIMER_Counter_Mode_TypeDef */
@@ -593,6 +594,10 @@ typedef struct
                                              This parameter can be a value of @ref FunctionalState */
     uint16_t TIMER_CH_CCR1_EventSource; /*!< Specifies the Channel CCR1 Event source.
                                              This parameter can be a value of @ref TIMER_CH_CCR1_Event_Src_TypeDef */
+#if defined (USE_K1986VE9xI) || defined (USE_K1986VE1xI)
+    uint16_t TIMER_CH_EventDelay;       /*!< Enables or disables synchronization between the capture event and the update of registers CCR and CCR1.
+                                             This parameter can be a value of @ref FunctionalState */
+#endif
 } TIMER_ChnInitTypeDef;
 
 /**
@@ -668,22 +673,27 @@ void TIMER_CntStructInit(TIMER_CntInitTypeDef* TIMER_CntInitStruct);
 
 void TIMER_Cmd(MDR_TIMER_TypeDef* TIMERx, FunctionalState NewState);
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     void TIMER_SetCounter(MDR_TIMER_TypeDef* TIMERx, uint32_t Counter);
     uint32_t TIMER_GetCounter(MDR_TIMER_TypeDef* TIMERx);
-#elif defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#elif defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     void TIMER_SetCounter(MDR_TIMER_TypeDef* TIMERx, uint16_t Counter);
     uint16_t TIMER_GetCounter(MDR_TIMER_TypeDef* TIMERx);
 #endif
 
-void TIMER_SetCntPrescaler(MDR_TIMER_TypeDef* TIMERx, uint16_t Prescaler);
-uint16_t TIMER_GetCntPrescaler(MDR_TIMER_TypeDef* TIMERx);
+#if defined (USE_K1986VE1xI)
+    void TIMER_SetCntPrescaler(MDR_TIMER_TypeDef* TIMERx, uint32_t Prescaler);
+    uint32_t TIMER_GetCntPrescaler(MDR_TIMER_TypeDef* TIMERx);
+#elif defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
+    void TIMER_SetCntPrescaler(MDR_TIMER_TypeDef* TIMERx, uint16_t Prescaler);
+    uint16_t TIMER_GetCntPrescaler(MDR_TIMER_TypeDef* TIMERx);
+#endif
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     void TIMER_SetCntAutoreload(MDR_TIMER_TypeDef* TIMERx, uint32_t Autoreload);
     void TIMER_CntAutoreloadConfig(MDR_TIMER_TypeDef* TIMERx, uint32_t Autoreload, TIMER_ARR_Update_Mode_TypeDef UpdateMode);
     uint32_t TIMER_GetCntAutoreload(MDR_TIMER_TypeDef* TIMERx);
-#elif defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#elif defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     void TIMER_SetCntAutoreload(MDR_TIMER_TypeDef* TIMERx, uint16_t Autoreload);
     void TIMER_CntAutoreloadConfig(MDR_TIMER_TypeDef* TIMERx, uint16_t Autoreload, TIMER_ARR_Update_Mode_TypeDef UpdateMode);
     uint16_t TIMER_GetCntAutoreload(MDR_TIMER_TypeDef* TIMERx);
@@ -704,21 +714,21 @@ FlagStatus TIMER_GetCntWriteComplete(MDR_TIMER_TypeDef* TIMERx);
 void TIMER_ChnInit(MDR_TIMER_TypeDef* TIMERx, const TIMER_ChnInitTypeDef* TIMER_ChnInitStruct);
 void TIMER_ChnStructInit(TIMER_ChnInitTypeDef* TIMER_ChnInitStruct);
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     void TIMER_SetChnCompare(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint32_t Compare);
     void TIMER_ChnCompareConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint32_t Compare, TIMER_CH_CCR_Update_Mode_TypeDef UpdateMode);
     uint32_t TIMER_GetChnCapture(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel);
-#elif defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#elif defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     void TIMER_SetChnCompare(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint16_t Compare);
     void TIMER_ChnCompareConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint16_t Compare, TIMER_CH_CCR_Update_Mode_TypeDef UpdateMode);
     uint16_t TIMER_GetChnCapture(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel);
 #endif
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     void TIMER_SetChnCompare1(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint32_t Compare);
     void TIMER_ChnCompare1Config(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint32_t Compare, TIMER_CH_CCR_Update_Mode_TypeDef UpdateMode);
     uint32_t TIMER_GetChnCapture1(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel);
-#elif defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#elif defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     void TIMER_SetChnCompare1(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint16_t Compare);
     void TIMER_ChnCompare1Config(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, uint16_t Compare, TIMER_CH_CCR_Update_Mode_TypeDef UpdateMode);
     uint16_t TIMER_GetChnCapture1(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel);
@@ -730,8 +740,12 @@ void TIMER_ChnBRKResetConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_Typ
 void TIMER_ChnREFFormatConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, TIMER_CH_REF_Format_TypeDef Format);
 void TIMER_ChnCapturePrescalerConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, TIMER_CH_Prescaler_TypeDef Prescaler);
 void TIMER_ChnEventSourceConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, TIMER_CH_Event_Src_TypeDef EventSource);
+#if defined (USE_K1986VE9xI) || defined (USE_K1986VE1xI)
+void TIMER_ChnEventDelay_Cmd(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, FunctionalState NewState);
+#endif
 void TIMER_ChnFilterConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, TIMER_Filter_Config_TypeDef Filter);
 FlagStatus TIMER_GetChnWriteComplete(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel);
+FlagStatus TIMER_GetChnWriteComplete1(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel);
 void TIMER_ChnCCR1_EventSourceConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, TIMER_CH_CCR1_Event_Src_TypeDef EventSource);
 void TIMER_ChnCCR1_Cmd(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeDef Channel, FunctionalState NewState);
 
@@ -750,9 +764,9 @@ void TIMER_ChnOutDTGConfig(MDR_TIMER_TypeDef* TIMERx, TIMER_Channel_Number_TypeD
 uint32_t TIMER_GetStatus(MDR_TIMER_TypeDef* TIMERx);
 FlagStatus TIMER_GetFlagStatus(MDR_TIMER_TypeDef* TIMERx, TIMER_Status_Flags_TypeDef Flag);
 void TIMER_ClearFlag(MDR_TIMER_TypeDef* TIMERx, uint32_t Flags);
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
     void TIMER_DMACmd(MDR_TIMER_TypeDef* TIMERx, uint32_t TIMER_DMASource, TIMER_DMA_Channel_TypeDef TIMER_DMAChannel, FunctionalState NewState);
-#elif defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#elif defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     void TIMER_DMACmd(MDR_TIMER_TypeDef* TIMERx, uint32_t TIMER_DMASource, FunctionalState NewState);
 #endif
 
@@ -773,7 +787,7 @@ void TIMER_BRGInit(MDR_TIMER_TypeDef* TIMERx, TIMER_Clock_BRG_TypeDef TIMER_BRG)
 
 #endif /* __MDR32FxQI_TIMER_H */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_timer.h */
 

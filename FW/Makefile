@@ -24,7 +24,7 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-platform/K1986BE92FI/Source/system_MDR32F9Q2I.c \
+platform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup/system_MDR32F1QI.c \
 platform/SPL/MDR32FxQI/src/MDR32FxQI_rst_clk.c \
 src/main.c \
 
@@ -44,8 +44,8 @@ C_SOURCES 	+= $(wildcard app/coremark/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
-platform/K1986BE92FI/Source/startup_MDR32F9Qx.s
-
+platform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup/arm/startup_MDR32F9Qx.s
+# platform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup/arm/startup_MDR32F1QI.s
 
 #######################################
 # binaries
@@ -89,9 +89,7 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DHSE_Value="8000000" \
--DUSE_MDR1986VE9x \
--DUSE_MDR32F9Q2I \
+-DUSE_K1986VE92xI \
 -DITERATIONS=4096 \
 -DCLOCKS_PER_SEC=1000 \
 -DCOREMARK_TIME=millis
@@ -101,10 +99,11 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
+-Iplatform/CMSIS/MDR32FxQI/CoreSupport/CM1 \
+-Iplatform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/inc \
+-Iplatform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup \
 -Iplatform/SPL/MDR32FxQI/inc \
 -Iplatform/SPL/MDR32FxQI \
--Iplatform/K1986BE92FI/Include \
--Iplatform/CMSIS/Core/Include \
 
 C_INCLUDES += -Iapp/retarget/
 C_INCLUDES += -Iapp/u_read_line

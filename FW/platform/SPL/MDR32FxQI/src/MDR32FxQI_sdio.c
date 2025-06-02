@@ -8,14 +8,14 @@
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -32,7 +32,7 @@
   * @{
   */
 
-/** @defgroup SDIO_Private_Functions SDIO Private Functions
+/** @defgroup SDIO_Exported_Functions SDIO Exported Functions
   * @{
   */
 
@@ -240,7 +240,7 @@ void SDIO_SetCMDLineDirection(SDIO_CMD_Line_Dir_TypeDef cmd_direction)
 }
 
 /**
-  * @brief   Initializes the SDIO peripheral clock according to the @specified parameters.
+  * @brief   Initializes the SDIO peripheral clock according to the specified parameters.
   * @warning This function can be used only for microcontroller series MDR32FG16S1QI.
   * @param   prescaler - @ref SDIO_Clk_Div_TypeDef - specifies the HCLK division factor.
   * @retval  None
@@ -522,14 +522,14 @@ void SDIO_SendBlock(uint8_t *buff, uint32_t n_byte)
     while ((MDR_SDIO->CR & SDIO_CR_WORK1) != 0) {}   // Waiting for transaction to complete
 }
 
-/** @} */ /* End of group SDIO_Private_Functions */
+/** @} */ /* End of group SDIO_Exported_Functions */
 
 /** @} */ /* End of group SDIO */
 #endif /* #if defined (USE_MDR32FG16S1QI) */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_sdio.c */
 

@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_iwdg.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
+  * @version V2.0.3i
   * @date    17/03/2022
   * @brief   This file contains all the IWDG firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -44,7 +44,7 @@
 /** @} */ /* End of group IWDG_Private_Defines */
 
 
-/** @defgroup IWDG_Private_Functions IWDG Private Functions
+/** @defgroup IWDG_Exported_Functions IWDG Exported Functions
   * @{
   */
 
@@ -167,13 +167,13 @@ FlagStatus IWDG_GetFlagStatus(IWDG_Flags IWDG_FLAG)
     return bitstatus;
 }
 
-/** @} */ /* End of group IWDG_Private_Functions */
+/** @} */ /* End of group IWDG_Exported_Functions */
 
 /** @} */ /* End of group IWDG */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_iwdg.c */
 

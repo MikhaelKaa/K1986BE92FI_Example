@@ -12,7 +12,7 @@
 #include "ucmd.h"
 #include "memory_man.h"
 
-#include "MDR32F9Q2I.h"
+#include "MDR32F1QI.h"
 #include "MDR32FxQI_rst_clk.h"
 #include "MDR32FxQI_port.h"
 
@@ -64,6 +64,17 @@ void show_version(void) {
 
   printf("%s\r\n", build_version);
   set_display_atrib(F_GREEN);
+  // TODO: Написать RAMFUNK возвращающий uniq_id
+  /*
+  В функции show_version() предположительно происходит чтение UNIQ_ID 
+  из производственной информации (адреса с 0x08000FB0 по 0x08000FF0). 
+  Однако производственные данные находятся в информационной области 
+  Flash-памяти, а информационная область недоступна по системным шинам 
+  при обращении по адресу. Доступ к информационной области к Flash-памяти 
+  осуществляется только через регистровый доступ, при этом функции 
+  работы с Flash-памятью должны быть расположены в ОЗУ 
+  (см. https://support.milandr.ru/base/primenenie/programmirovanie-32-razryadnykh-mk/nachalo-raboty/47402/). 
+  */
   printf ("MCU UNIQID4: 0x%08lx\r\n", *(uint32_t*)0x08000FF0);
   printf ("MCU UNIQID3: 0x%08lx\r\n", *(uint32_t*)0x08000FE0);
   printf ("MCU UNIQID2: 0x%08lx\r\n", *(uint32_t*)0x08000FD0);
@@ -112,7 +123,7 @@ void led_Init(void)
     RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTB, ENABLE);
 
     // Создание структуры для инициализации порта	
-    PORT_InitTypeDef PORT_InitStructure;
+    PORT_InitTypeDef PORT_InitStructure = {0};
 
     // Настройки порта: вывод, функция ввода/вывода, цифровой режим, максимальная скорость, Pin2
     PORT_InitStructure.PORT_OE      = PORT_OE_OUT;
@@ -130,19 +141,19 @@ int main() {
     while( timeout-- );
 
     clk_CoreConfig();
+    led_Init();
     printf_init();
     show_version();
     ucmd_default_init();
     ms_timer_init();
-    led_Init();
     int led_cnt = 0, led_tgl = 0;
-    uint32_t time_last = 0;
-    uint32_t time = 0;
+    // uint32_t time_last = 0;
+    // uint32_t time = 0;
     
 
     while (1) {
         if(led_cnt++%4096 == 0) {
-          time = millis();
+          // time = millis();
           PORT_WriteBit(MDR_PORTB, PORT_Pin_7, led_tgl++%2);
           // printf("test ms: %lu\r\n", time-time_last);
           // time_last = time;

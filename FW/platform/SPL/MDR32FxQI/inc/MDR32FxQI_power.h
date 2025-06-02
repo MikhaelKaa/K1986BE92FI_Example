@@ -2,21 +2,21 @@
   ******************************************************************************
   * @file    MDR32FxQI_power.h
   * @author  Milandr Application Team
-  * @version V2.0.0i
-  * @date    10/03/2022
+  * @version V2.1.1i
+  * @date    23/07/2024
   * @brief   This file contains all the functions prototypes for the POWER
   *          firmware library.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -94,9 +94,7 @@ typedef enum
 
 #define IS_POWER_FLAG(F) (((F) == POWER_FLAG_PVD) || ((F) == POWER_FLAG_PVBD))
 
-#define IS_POWER_FLAGS(F) (((F) == POWER_FLAG_PVD)  || \
-                           ((F) == POWER_FLAG_PVBD) || \
-                           ((F) == (POWER_FLAG_PVD & POWER_FLAG_PVBD)))
+#define IS_POWER_FLAGS(F) (((F) & ~(POWER_FLAG_PVD | POWER_FLAG_PVBD)) == 0x0)
 
 /**
  *  @brief POWER Voltage Detector Interrupt Enable
@@ -131,6 +129,9 @@ typedef enum
 void POWER_DeInit(void);
 
 void POWER_PVDenable(FunctionalState NewState);
+#if defined (USE_K1986VE1xI)
+    void POWER_PVBDenable(FunctionalState NewState);
+#endif
 void POWER_PVDlevelConfig(PWR_Voltage_Detector_Lvl POWER_PVDlevel);
 void POWER_PVBDlevelConfig(PWR_Batt_Voltage_Detector_Lvl POWER_PVBDlevel);
 FlagStatus POWER_GetFlagStatus(PWR_Voltage_Detector_Flags POWER_FLAG);
@@ -150,7 +151,7 @@ void POWER_PVD_INVconfig(uint32_t POWER_INV, FunctionalState NewState);
 
 #endif /* __MDR32FxQI_POWER_H */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_power.h */
 

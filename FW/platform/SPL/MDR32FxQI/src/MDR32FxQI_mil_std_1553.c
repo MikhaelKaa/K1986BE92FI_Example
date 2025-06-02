@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_mil_std_1553.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    10/03/2022
+  * @version V2.0.4i
+  * @date    24/07/2024
   * @brief   This file contains all the MIL STD 1553 firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -26,18 +26,15 @@
   * @{
   */
 
-#if defined (USE_MDR32F1QI)
+#if defined (USE_K1986VE1xI)
 /** @defgroup MIL_STD_1553 MIL_STD_1553
- *  @warning This module can be used only for MCU MDR32F1QI.
+ *  @warning This module can be used only for MCU K1986VE1xI.
   * @{
   */
 
 /** @defgroup MIL_STD_1553_Private_Defines MIL_STD_1553 Private Defines
   * @{
   */
-
-#define MR_EN_Set       ((uint32_t)0x00000001)   /*!< MIL_STD_1553 Enable mask */
-#define MR_EN_Reset     ((uint32_t)0x0000FFFE)   /*!< MIL_STD_1553 Disable mask */
 
 #define IS_MIL_STD_1553_SUBADDRES(SUBADDRES)  (((SUBADDRES) != 0) && \
                                                ((SUBADDRES) <= 0x1F) )
@@ -48,7 +45,7 @@
 /** @} */ /* End of group MIL_STD_1553_Private_Defines */
 
 
-/** @defgroup MIL_STD_1553_Private_Functions MIL_STD_1553 Private Functions
+/** @defgroup MIL_STD_1553_Exported_Functions MIL_STD_1553 Exported Functions
   * @{
   */
 
@@ -118,7 +115,7 @@ void MIL_STD_1553_Init(MDR_MIL_STD_1553_TypeDef * MIL_STD_1553x, MIL_STD_1553_In
 #if defined (USE_MDR32F1QI_REV3_4)
     assert_param(IS_FUNCTIONAL_STATE(MIL_STD_1553_InitStruct->MIL_STD_1553_Filtration_Flow));
     assert_param(IS_FUNCTIONAL_STATE(MIL_STD_1553_InitStruct->MIL_STD_1553_Automatic_Adjustment));
-#elif defined (USE_MDR32F1QI_REV6)
+#elif defined (USE_MDR32F1QI_REV6) || (defined(USE_K1986VE1xI) && !defined(USE_MDR32F1QI))
     assert_param(IS_FUNCTIONAL_STATE(MIL_STD_1553_InitStruct->MIL_STD_1553_EN_FLT));
     assert_param(IS_FUNCTIONAL_STATE(MIL_STD_1553_InitStruct->MIL_STD_1553_INPINV));
     assert_param(IS_FUNCTIONAL_STATE(MIL_STD_1553_InitStruct->MIL_STD_1553_RT_HW));
@@ -137,7 +134,7 @@ void MIL_STD_1553_Init(MDR_MIL_STD_1553_TypeDef * MIL_STD_1553x, MIL_STD_1553_In
     tmpreg |= (MIL_STD_1553_InitStruct->MIL_STD_1553_Automatic_Adjustment << MIL_STD_1553_CONTROL_AUTOTUNE_Pos)
             | (MIL_STD_1553_InitStruct->MIL_STD_1553_Filtration_Flow      << MIL_STD_1553_CONTROL_ENFILTER_Pos);
 
-#elif defined (USE_MDR32F1QI_REV6)
+#elif defined (USE_MDR32F1QI_REV6) || (defined(USE_K1986VE1xI) && !defined(USE_MDR32F1QI))
     tmpreg |= (MIL_STD_1553_InitStruct->MIL_STD_1553_EN_FLT << MIL_STD_1553_CONTROL_EN_FLT_Pos)
             | (MIL_STD_1553_InitStruct->MIL_STD_1553_INPINV << MIL_STD_1553_CONTROL_INPINV_Pos)
             | (MIL_STD_1553_InitStruct->MIL_STD_1553_RT_HW  << MIL_STD_1553_CONTROL_RT_HW_Pos);
@@ -177,7 +174,7 @@ void MIL_STD_1553xStructInit(MIL_STD_1553_InitTypeDef * MIL_STD_1553_InitStruct)
     MIL_STD_1553_InitStruct->MIL_STD_1553_Filtration_Flow = DISABLE;
     /* Initialize the MIL_STD_1553_Automatic_Adjustment member */
     MIL_STD_1553_InitStruct->MIL_STD_1553_Automatic_Adjustment = DISABLE;
-#elif defined (USE_MDR32F1QI_REV6)
+#elif defined (USE_MDR32F1QI_REV6) || (defined(USE_K1986VE1xI) && !defined(USE_MDR32F1QI))
     MIL_STD_1553_InitStruct->MIL_STD_1553_EN_FLT = DISABLE;
     MIL_STD_1553_InitStruct->MIL_STD_1553_INPINV = DISABLE;
     MIL_STD_1553_InitStruct->MIL_STD_1553_RT_HW = DISABLE;
@@ -200,13 +197,13 @@ void MIL_STD_1553_Cmd(MDR_MIL_STD_1553_TypeDef * MIL_STD_1553x, FunctionalState 
 
     if(NewState != DISABLE)
     {
-        /* Enable the selected MIL_STD_1553 by clearingsetting the MR bit in the CONTROL register */
-        MIL_STD_1553x->CONTROL &= ~MR_EN_Set;
+        /* Enable the selected MIL_STD_1553 by clearing the MR bit in the CONTROL register */
+        MIL_STD_1553x->CONTROL &= ~MIL_STD_1553_CONTROL_MR;
     }
     else
     {
         /* Disable the selected MIL_STD_1553 by setting the MR bit in the CONTROL register */
-        MIL_STD_1553x->CONTROL |= ~MR_EN_Reset;
+        MIL_STD_1553x->CONTROL |= MIL_STD_1553_CONTROL_MR;
     }
 }
 
@@ -556,15 +553,15 @@ void MIL_STD_1553_RERRCmd(MDR_MIL_STD_1553_TypeDef * MIL_STD_1553x, FunctionalSt
     }
 }
 
-/** @} */ /* End of group MIL_STD_1553_Private_Functions */
+/** @} */ /* End of group MIL_STD_1553_Exported_Functions */
 
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
 /** @} */ /* End of group MIL_STD_1553 */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_mil_std_1553.c */
 

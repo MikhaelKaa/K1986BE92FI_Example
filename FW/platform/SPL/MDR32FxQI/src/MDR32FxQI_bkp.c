@@ -2,20 +2,20 @@
   ******************************************************************************
   * @file    MDR32FxQI_bkp.c
   * @author  Milandr Application Team
-  * @version V2.0.2i
-  * @date    17/03/2022
+  * @version V2.2.1i
+  * @date    24/09/2024
   * @brief   This file contains all the BKP firmware functions.
   ******************************************************************************
   * <br><br>
   *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, MILANDR SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
-  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  * THE PRESENT FIRMWARE IS FOR GUIDANCE ONLY. IT AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING MILANDR'S PRODUCTS IN ORDER TO FACILITATE
+  * THE USE AND SAVE TIME. MILANDR SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES RESULTING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR A USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2022 Milandr</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2024 Milandr</center></h2>
   ******************************************************************************
   */
 
@@ -35,15 +35,13 @@
   */
 
 /* BKP registers bit address in the alias region */
-#define PERIPH_BASE                 0x40000000
-#define PERIPH_BB_BASE              0x42000000
 #define BKP_OFFSET                  (MDR_BKP_BASE - PERIPH_BASE)
 
 #define SFR_OFFSET(TP, MOD, SFR)    ((uint32_t)&((TP*)MOD)->SFR)
 #define BB_ADDR(TP, MOD, SFR, BIT)  (PERIPH_BB_BASE + SFR_OFFSET(TP, MOD, SFR)*32 + BIT*4)
 #define BKP_BB(SFR, BIT)            BB_ADDR(MDR_BKP_TypeDef, BKP_OFFSET, SFR, BIT)
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     #define BKP_JTAGA_BB            BKP_BB(REG_0E, BKP_REG_0E_JTAGA_Pos)
     #define BKP_JTAGB_BB            BKP_BB(REG_0E, BKP_REG_0E_JTAGB_Pos)
     #define BKP_FPOR_BB             BKP_BB(REG_0E, BKP_REG_0E_FPOR_Pos)
@@ -57,8 +55,6 @@
 /* BKP_REG0E register bit mask */
 #define DUcc_Mask                   ((uint32_t)(BKP_REG_0E_LOW_Msk | BKP_REG_0E_SELECTRI_Msk))
 #define DUccTrim_Mask               ((uint32_t)BKP_REG_0E_TRIM_Msk)
-#define BKP_REG_0E_ON               ((uint32_t)(0x01U<<11))
-#define BKP_REG_0E_OFF              ((uint32_t)(~((0x01U<<31)|(0x07U<<8)|(0x3FU))))
 
 /* CFR register bit mask */
 #define WDGTB_Mask                  ((uint32_t)0xFFFFFE7F)
@@ -68,7 +64,7 @@
 /** @} */ /* End of group BKP_Private_Defines */
 
 
-/** @defgroup BKP_Private_Functions BKP Private Functions
+/** @defgroup BKP_Exported_Functions BKP Exported Functions
   * @{
   */
 
@@ -79,10 +75,10 @@
   */
 void BKP_DeInit(void)
 {
-    #define BKP_RTC_CS_NUM ((uint32_t) (SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, RTC_CS) - BKP_OFFSET)/4)
-    #define BKP_REG_0F_NUM ((uint32_t) (SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, REG_0F) - BKP_OFFSET)/4)
-    #define BKP_REG_0E_NUM ((uint32_t) (SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, REG_0E) - BKP_OFFSET)/4)
-    #define BKP_RTC_CNT_NUM ((uint32_t) (SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, RTC_CNT) - BKP_OFFSET)/4)
+    #define BKP_RTC_CS_NUM  ((uint32_t)(SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, RTC_CS) - BKP_OFFSET)/4)
+    #define BKP_REG_0F_NUM  ((uint32_t)(SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, REG_0F) - BKP_OFFSET)/4)
+    #define BKP_REG_0E_NUM  ((uint32_t)(SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, REG_0E) - BKP_OFFSET)/4)
+    #define BKP_RTC_CNT_NUM ((uint32_t)(SFR_OFFSET(MDR_BKP_TypeDef, BKP_OFFSET, RTC_CNT) - BKP_OFFSET)/4)
 
     uint32_t * _bkp = (uint32_t *) MDR_BKP_BASE;
     uint32_t i;
@@ -97,15 +93,29 @@ void BKP_DeInit(void)
         _bkp[i] = 0;
     }
 
-    MDR_BKP->REG_0E |= (uint32_t) (BKP_REG_0E_ON);
-    MDR_BKP->REG_0E &= (uint32_t) (BKP_REG_0E_OFF);
-    MDR_BKP->REG_0F  = (uint32_t) (BKP_REG_0F_LSI_ON | BKP_REG_0F_HSI_ON);
+    MDR_BKP->REG_0E |= BKP_REG_0E_FPOR;
+#if (defined(USE_MDR32F9xI) && defined(USE_K1986VE9xI)) || defined(USE_MDR32FG16S1QI)
+    MDR_BKP->REG_0E &= ~(BKP_REG_0E_LOW_Msk | BKP_REG_0E_SELECTRI_Msk | BKP_REG_0E_TRIM_Msk);
+#elif (defined(USE_K1986VE9xI) && !defined(USE_MDR32F9xI))
+    MDR_BKP->REG_0E &= ~(BKP_REG_0E_LOW_Msk | BKP_REG_0E_SELECTRI_Msk);
+#elif (defined(USE_K1986VE1xI) && !defined(USE_MDR32F1QI))
+    MDR_BKP->REG_0E &= ~(BKP_REG_0E_LOW_Msk | BKP_REG_0E_SELECTRI_Msk | BKP_REG_0E_ILIMEN);
+#elif (defined(USE_K1986VE1xI) && defined(USE_MDR32F1QI))
+    MDR_BKP->REG_0E &= ~(BKP_REG_0E_LOW_Msk | BKP_REG_0E_SELECTRI_Msk | BKP_REG_0E_TRIM_Msk | BKP_REG_0E_ILIMEN);
+#endif
+
+#if (defined(USE_K1986VE9xI) || defined(USE_K1986VE1xI)) && !(defined(USE_MDR32F9xI) || defined(USE_MDR32F1QI))
+    MDR_BKP->REG_0F |= (uint32_t)(BKP_REG_0F_LSI_ON | BKP_REG_0F_HSI_ON);
+#else
+    MDR_BKP->REG_0F  = (uint32_t)(BKP_REG_0F_LSI_ON | (0x10 << BKP_REG_0F_LSI_TRIM_Pos) |
+                                  BKP_REG_0F_HSI_ON | (0x20 << BKP_REG_0F_HSI_TRIM_Pos));
+#endif
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Enables or disables the JTAG A.
-  * @warning This function can be used only for MCU MDR32F9Q2I and MDR32FG16S1QI
+  * @warning This function can be used only for MCU MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI
   * @param   NewState - @ref FunctionalState - new state of the JTAG A (ENABLE or DISABLE).
   * @retval  None
   */
@@ -120,7 +130,7 @@ void BKP_JTAGA_CMD(FunctionalState NewState)
 
 /**
   * @brief   Enables or disables the JTAG B.
-  * @warning This function can be used only for MCU MDR32F9Q2I and MDR32FG16S1QI
+  * @warning This function can be used only for MCU MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI
   * @param   NewState - @ref FunctionalState - new state of the JTAG B (ENABLE or DISABLE).
   * @retval  None
   */
@@ -131,7 +141,7 @@ void BKP_JTAGB_CMD(FunctionalState NewState)
 
     *(__IO uint32_t *) BKP_JTAGB_BB = (uint32_t)NewState;
 }
-#endif /* #if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI) */
+#endif /* #if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI) */
 
 /**
   * @brief  Configures the RTC clock source.
@@ -161,9 +171,9 @@ void BKP_RTC_WorkPermit(FunctionalState NewState)
 {
     /* Check the parameters */
     assert_param(IS_FUNCTIONAL_STATE(NewState));
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     *(__IO uint32_t *) RTC_ENABLE_BB = (uint32_t)NewState;
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     if(NewState != DISABLE)
     {
         MDR_BKP->REG_0F |= BKP_REG_0F_RTC_EN;
@@ -208,9 +218,9 @@ void BKP_RTC_Reset(FunctionalState NewState)
     /* Check the parameters */
     assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     *(__IO uint32_t *) RTC_RESET_BB = (uint32_t) NewState;
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     if(NewState != DISABLE)
     {
         MDR_BKP->REG_0F |= BKP_REG_0F_RTC_RESET;
@@ -224,11 +234,12 @@ void BKP_RTC_Reset(FunctionalState NewState)
 
 /**
   * @brief  Enables or disables the specified RTC interrupts.
-  * @param  BKP_RTC_IT_Source - @ref BKP_RTC_IT - specifies the RTC interrupts sources to be enabled or disabled.
+  * @param  BKP_RTC_IT_Source: Specifies the RTC interrupts sources to be enabled or disabled.
+  *         This parameter can be any combination of @ref BKP_RTC_IT values.
   * @param  NewState - @ref FunctionalState - new state of the specified RTC interrupts (ENABLE or DISABLE).
   * @retval None
   */
-void BKP_RTC_ITConfig(BKP_RTC_IT BKP_RTC_IT_Source, FunctionalState NewState)
+void BKP_RTC_ITConfig(uint32_t BKP_RTC_IT_Source, FunctionalState NewState)
 {
     /* Check the parameters */
     assert_param(IS_RTC_CLK_IT(BKP_RTC_IT_Source));
@@ -236,11 +247,11 @@ void BKP_RTC_ITConfig(BKP_RTC_IT BKP_RTC_IT_Source, FunctionalState NewState)
 
     if (NewState != DISABLE)
     {
-        MDR_BKP->RTC_CS |= (uint32_t)BKP_RTC_IT_Source;
+        MDR_BKP->RTC_CS |= BKP_RTC_IT_Source;
     }
     else
     {
-        MDR_BKP->RTC_CS &= (uint32_t)~BKP_RTC_IT_Source;
+        MDR_BKP->RTC_CS &= ~BKP_RTC_IT_Source;
     }
 }
 
@@ -307,9 +318,9 @@ void BKP_RTC_SetPrescaler(uint32_t PrescalerValue)
 void BKP_RTC_WaitForUpdate(void)
 {
     /* Loop until WEC flag is set */
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     while (*(__IO uint32_t *) RTC_WEC_BB != 0);
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     while((MDR_BKP->RTC_CS & BKP_RTC_CS_WEC) == BKP_RTC_CS_WEC);
 #endif
 
@@ -407,9 +418,9 @@ void BKP_DUccTrim(BKP_DUcc_Trim DUccTrim)
   */
 void BKP_SetFlagPOR(void)
 {
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     *(__IO uint32_t *) BKP_FPOR_BB = (uint32_t) 0x01;
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     MDR_BKP->REG_0E |= BKP_REG_0E_FPOR;
 #endif
 }
@@ -422,12 +433,12 @@ void BKP_SetFlagPOR(void)
 ErrorStatus BKP_FlagPORstatus(void)
 {
     ErrorStatus state = ERROR;
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     if (*(__IO uint32_t *) BKP_FPOR_BB == 0)
     {
         state = SUCCESS;
     }
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     if (( MDR_BKP->REG_0E & BKP_REG_0E_FPOR ) == BKP_REG_0E_FPOR)
     {
         state = SUCCESS;
@@ -436,10 +447,10 @@ ErrorStatus BKP_FlagPORstatus(void)
     return state;
 }
 
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
 /**
   * @brief   Enters STOP mode.
-  * @warning This function can be used only for MCU MDR32F9Q2I and MDR32FG16S1QI
+  * @warning This function can be used only for MCU MDR32F9Q2I, K1986VE9xI and MDR32FG16S1QI
   * @param   BKP_Regulator_state - @ref FunctionalState - specifies the regulator state in STOP mode.
   *              @arg ENABLE:  STOP mode with regulator ON
   *              @arg DISABLE: STOP mode with regulator in low power mode
@@ -476,25 +487,26 @@ void BKP_EnterSTOPMode(FunctionalState BKP_Regulator_state, BKP_Stop_Entry_Mode 
     }
 }
 
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
 /**
   * @brief   Shifting core controller into a low power consumption. In this mode
   *          the clock frequency is applied only to the selected peripheral
   *          blocks, which interrupt the supply resumes clock on the core.
-  * @warning This function can be used only for MCU MDR32F1QI
+  * @warning This function can be used only for MCU MDR32F1QI, K1986VE1xI
   * @param   None
   * @retval  None
   */
 void BKP_EnterSLEEPMode(void)
 {
     /* Enter in SLEEP mode */
-    MDR_RST_CLK->ETH_CLOCK |= (1 << RST_CLK_ETH_CLOCK_SLEEP_Pos);
+    MDR_RST_CLK->ETH_CLOCK |= RST_CLK_ETH_CLOCK_SLEEP;
+    __DSB();
 }
 
 /**
   * @brief   Adjustment coefficient of the reference voltage
   *          integrated voltage regulator DUcc roughly.
-  * @warning This function can be used only for MCU MDR32F1QI
+  * @warning This function can be used only for MCU MDR32F1QI, K1986VE1xI
   * @param   trim - @ref BKP_TRIM - coefficient of the reference voltage.
   * @return  None.
   */
@@ -513,7 +525,7 @@ void BKP_SetTrim(BKP_TRIM trim)
 
 /**
   * @brief   Controls current limit protection 150mA
-  * @warning This function can be used only for MCU MDR32F1QI
+  * @warning This function can be used only for MCU MDR32F1QI, K1986VE1xI
   * @param   NewState - @ref FunctionalState - new state of ilimen bit (ENABLE or DISABLE).
   * @return  None.
   */
@@ -534,7 +546,7 @@ void BKP_CurrentLimitProtection150mA(FunctionalState NewState)
 
 /**
   * @brief   Enter StandAlone mode
-  * @warning This function can be used only for MCU MDR32F1QI
+  * @warning This function can be used only for MCU MDR32F1QI, K1986VE1xI
   * @param   None.
   * @return  None.
   */
@@ -542,31 +554,31 @@ void BKP_EnterStandAloneMode(void)
 {
     MDR_BKP->REG_0E |= (1 << BKP_REG_0E_SANDALONE_Pos);
 }
-#endif /* #if defined (USE_MDR32F1QI) */
+#endif /* #if defined (USE_K1986VE1xI) */
 
 /**
-  * @brief  Enters STANDBY mode.
-  * @param  None
-  * @retval None
+  * @brief   Enters STANDBY mode.
+  * @warning For MDR32F1QI, K1986VE1xI: Recommended not to use.
+  * @param   None.
+  * @retval  None.
   */
 void BKP_EnterSTANDBYMode(void)
 {
     /* Select STANDBY mode */
-#if defined (USE_MDR32F9Q2I) || defined (USE_MDR32FG16S1QI)
+#if defined (USE_K1986VE9xI) || defined (USE_MDR32FG16S1QI)
     *(__IO uint32_t *) BKP_STANDBY_BB = (uint32_t) 0x01;
-#elif defined (USE_MDR32F1QI)
+#elif defined (USE_K1986VE1xI)
     MDR_BKP->REG_0F |= BKP_REG_0F_STANDBY;
 #endif
 }
 
-/** @} */ /* End of group BKP_Private_Functions */
+/** @} */ /* End of group BKP_Exported_Functions */
 
 /** @} */ /* End of group BKP */
 
 /** @} */ /* End of group __MDR32FxQI_StdPeriph_Driver */
 
-/*********************** (C) COPYRIGHT 2022 Milandr ****************************
+/*********************** (C) COPYRIGHT 2024 Milandr ****************************
 *
 * END OF FILE MDR32FxQI_bkp.c */
-
 
