@@ -131,7 +131,7 @@ CFLAGS += -save-temps=obj
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = ./platform/ld/MDR32F9Qx.ld
+LDSCRIPT = ./platform/ld/MDR32F1QI.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 

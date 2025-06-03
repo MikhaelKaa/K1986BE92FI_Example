@@ -1,8 +1,9 @@
 /* Linker script to configure memory regions */
 MEMORY
 {
-	FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 128K
-	RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 32K
+	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 128K
+	RAM (rw)   : ORIGIN = 0x20000000, LENGTH = 32K
+	IRAM (rwx) : ORIGIN = 0x20100000, LENGTH = 16K
 }
 
 /* Linker script to place sections and symbol values. Should be used together
@@ -26,6 +27,9 @@ MEMORY
  *   __fini_array_start
  *   __fini_array_end
  *   __data_end__
+ *   __edata
+ *   __ramfunc_start__
+ *   __ramfunc_end__
  *   __bss_start__
  *   __bss_end__
  *   __end__
@@ -118,8 +122,6 @@ SECTIONS
 	.data : AT (__etext)
 	{
 		__data_start__ = .;
-		*(.ramfunc*)
-		. = ALIGN(4);
 		*(vtable)
 		*(.data*)
 
@@ -148,6 +150,16 @@ SECTIONS
 		/* All data end */
 		__data_end__ = .;
 	} > RAM
+
+	__edata = __etext + SIZEOF(.data);
+
+	.ramfunc : AT (__edata)
+	{
+		__ramfunc_start__ = .;
+		*(.ramfunc*)
+		. = ALIGN(4);
+		__ramfunc_end__ = .;
+	} > IRAM
 
 	.bss :
 	{
