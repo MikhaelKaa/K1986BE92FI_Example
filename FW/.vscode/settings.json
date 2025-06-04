@@ -13,6 +13,7 @@
         "memory_man.h": "c",
         "mdr32fxqi_uart.h": "c",
         "mdr32fxqi_rst_clk.h": "c",
-        "micros.h": "c"
+        "micros.h": "c",
+        "mdr32f1qi.h": "c"
     }
 }

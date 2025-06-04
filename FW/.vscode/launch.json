@@ -16,7 +16,7 @@
 			"showDevDebugOutput":"raw",
 			"configFiles": [
 				"./dbg/cmsis-dap.cfg"
-				// "./dbg/mdr32f9q2i.cfg" удалено
+				// "./dbg/MDR1986VE9x.cfg"
 			]
 		}
 	]

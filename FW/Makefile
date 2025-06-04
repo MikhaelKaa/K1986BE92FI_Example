@@ -24,13 +24,13 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-platform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup/system_MDR32F1QI.c \
-platform/SPL/MDR32FxQI/src/MDR32FxQI_rst_clk.c \
+platform/MDR32F1211FI/DeviceSupport/system_MDR32F9Q2I.c \
+platform/SPL/MDR32F1211FI/src/MDR32FxQI_rst_clk.c \
 src/main.c \
 
-C_SOURCES 	+= platform/SPL/MDR32FxQI/src/MDR32FxQI_port.c
-C_SOURCES 	+= platform/SPL/MDR32FxQI/src/MDR32FxQI_uart.c
-C_SOURCES 	+= platform/SPL/MDR32FxQI/src/MDR32FxQI_timer.c
+C_SOURCES 	+= platform/SPL/MDR32F1211FI/src/MDR32FxQI_port.c
+C_SOURCES 	+= platform/SPL/MDR32F1211FI/src/MDR32FxQI_uart.c
+C_SOURCES 	+= platform/SPL/MDR32F1211FI/src/MDR32FxQI_timer.c
 
 
 # # printf
@@ -44,8 +44,8 @@ C_SOURCES 	+= $(wildcard app/coremark/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
-platform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup/arm/startup_MDR32F9Qx.s
-# platform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup/arm/startup_MDR32F1QI.s
+platform/MDR32F1211FI/DeviceSupport/startup_MDR32F9Q2I.s
+
 
 #######################################
 # binaries
@@ -99,11 +99,10 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--Iplatform/CMSIS/MDR32FxQI/CoreSupport/CM1 \
--Iplatform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/inc \
--Iplatform/CMSIS/MDR32FxQI/DeviceSupport/MDR32F1QI/startup \
--Iplatform/SPL/MDR32FxQI/inc \
--Iplatform/SPL/MDR32FxQI \
+-Iplatform/MDR32F1211FI/CoreSupport/CM3 \
+-Iplatform/MDR32F1211FI/DeviceSupport \
+-Iplatform/SPL/MDR32F1211FI/inc \
+-Iplatform/SPL/MDR32F1211FI \
 
 C_INCLUDES += -Iapp/retarget/
 C_INCLUDES += -Iapp/u_read_line
@@ -131,7 +130,7 @@ CFLAGS += -save-temps=obj
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = ./platform/ld/MDR32F1QI.ld
+LDSCRIPT = ./platform/ld/MDR32F9Q2I.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 

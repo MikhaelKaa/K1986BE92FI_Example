@@ -82,7 +82,8 @@ extern "C" {
 #elif defined (USE_K1986VE92xI) || defined (USE_K1986VE94GI)
     #define USE_K1986VE9xI
     // #include "K1986VE9xI.h" // TODO: Где лежит этот хидер?
-    #include "MDR32F1QI.h"  // Взят хидер из ревизии старше.
+    // #include "MDR32F1QI.h"  // Взят хидер из ревизии старше.
+    #include "MDR32F9Q2I.h"
 #elif defined (USE_MDR32F1QI_REV3_4) || defined (USE_MDR32F1QI_REV6)
     #define USE_MDR32F1QI
     #define USE_K1986VE1xI

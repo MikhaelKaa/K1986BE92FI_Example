@@ -1,5 +1,5 @@
 /**
-  * FILE system_MDR32F1QI.c
+  * FILE system_MDR32F9Q2I.c
   */
 
 
@@ -7,18 +7,18 @@
   * @{
   */
 
-/** @addtogroup MDR32F1QI MDR32F1QI
+/** @defgroup MDR32F9Q2I
  *  @{
  */
 
-/** @addtogroup MDR32F1QI_System MDR32F1QI System
+/** @defgroup MDR32F9Q2I_System MDR32F9Q2I System
   * @{
   */
 
-#include "MDR32F1QI.h"
+#include "MDR32F9Q2I.h"
 #include "MDR32FxQI_config.h"
 
-/** @defgroup __MDR32F1QI_System_Private_Variables MDR32F1QI System Private Variables
+/** @addtogroup __MDR32F9Q2I_System_Private_Variables MDR32F9Q2I System Private Variables
   * @{
   */
 
@@ -28,9 +28,9 @@
 uint32_t SystemCoreClock = (uint32_t)8000000;   /*!< System Clock Frequency (Core Clock)
                                                  *   default value */
 
-/** @} */ /* End of group __MDR32F1QI_System_Private_Variables */
+/** @} */ /* End of group __MDR32F9Q2I_System_Private_Variables */
 
-/** @defgroup __MDR32F1QI_System_Private_Functions MDR32F1QI System Private Functions
+/** @addtogroup __MDR32F9Q2I_System_Private_Functions MDR32F9Q2I System Private Functions
   * @{
   */
 
@@ -140,21 +140,18 @@ void SystemInit(void)
     /* Reset SSP_CLOCK bits */
     MDR_RST_CLK->SSP_CLOCK     = (uint32_t)0x00000000;
 
-    /* Reset ETH_CLOCK bits */
-    MDR_RST_CLK->ETH_CLOCK     = (uint32_t)0x00000000;
-
     SystemCoreClockUpdate();
 }
 
-/** @} */ /* End of group __MDR32F1QI_System_Private_Functions */
+/** @} */ /* End of group __MDR32F9Q2I_System_Private_Functions */
 
-/** @} */ /* End of group MDR32F1QI_System MDR32F1QI System */
+/** @} */ /* End of group MDR32F9Q2I_System */
 
-/** @} */ /* End of group MDR32F1QI MDR32F1QI */
+/** @} */ /* End of group MDR32F9Q2I */
 
 /** @} */ /* End of group __CMSIS */
 
 /*
 *
-* END OF FILE system_MDR32F1QI.c */
+* END OF FILE system_MDR32F9Q2I.c */
 

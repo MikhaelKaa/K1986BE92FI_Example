@@ -8,13 +8,14 @@
                 "C:/arm_tool/gcc/arm-none-eabi/include/sys/",
                 "C:/arm_tool/gcc/lib/**",
                 "${workspaceRoot}\\platform\\**",
-                "${workspaceFolder}/platform/SPL/MDR32FxQI",
-                "${workspaceFolder}/platform/SPL/MDR32FxQI/inc",
                 "${workspaceFolder}/app/retarget",
                 "${workspaceFolder}/app/u_read_line",
                 "${workspaceFolder}/app/mem",
                 "${workspaceFolder}/app/micros",
-                "${workspaceFolder}/app/coremark"
+                "${workspaceFolder}/app/coremark",
+                "${workspaceFolder}/platform/SPL/MDR32F1211FI",
+                "${workspaceFolder}/platform/MDR32F1211FI/CoreSupport/CM3",
+                "${workspaceFolder}/platform/SPL/MDR32F1211FI/inc"
             ],
             "defines": [
                 "HSE_Value=8000000",
