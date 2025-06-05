@@ -65,7 +65,7 @@
         #if (DMA_AlternateData == 1)
             DMA_CtrlDataTypeDef DMA_ControlTable[(32 * DMA_AlternateData) + DMA_Channels_Number];
         #endif
-        #else
+    #else
         #pragma locate DMA_ControlTable 0x20000000 noinit
         #if (DMA_AlternateData == 0)
             DMA_CtrlDataTypeDef DMA_ControlTable[DMA_Channels_Number];
@@ -92,6 +92,24 @@
         #endif
     #endif /* #if defined (USE_K1986VE1xI) */
 
+#endif
+
+#elif defined (__GNUC__) /* GCC */
+    #if defined (USE_K1986VE1xI)
+        #if (DMA_AlternateData == 0)
+            DMA_CtrlDataTypeDef DMA_ControlTable[DMA_Channels_Number] __attribute__((section("EXECUTABLE_MEMORY_SECTION"))) __attribute__ ((aligned (1024)));
+        #endif
+        #if (DMA_AlternateData == 1)
+            DMA_CtrlDataTypeDef DMA_ControlTable[(32 * DMA_AlternateData) + DMA_Channels_Number] __attribute__((section("EXECUTABLE_MEMORY_SECTION"))) __attribute__ ((aligned (1024)));
+        #endif
+    #else
+        #if (DMA_AlternateData == 0)
+            DMA_CtrlDataTypeDef DMA_ControlTable[DMA_Channels_Number] __attribute__ ((aligned (1024)));
+        #endif
+        #if (DMA_AlternateData == 1)
+            DMA_CtrlDataTypeDef DMA_ControlTable[(32 * DMA_AlternateData) + DMA_Channels_Number] __attribute__ ((aligned (1024)));
+        #endif
+    #endif /* #if defined (USE_K1986VE1xI) */
 #endif
 
 /** @} */ /* End of group DMA_Private_Variables */

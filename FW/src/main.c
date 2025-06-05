@@ -12,7 +12,7 @@
 #include "ucmd.h"
 #include "memory_man.h"
 
-#include "MDR32F1QI.h"
+#include "MDR32FxQI_config.h"
 #include "MDR32FxQI_rst_clk.h"
 #include "MDR32FxQI_port.h"
 
