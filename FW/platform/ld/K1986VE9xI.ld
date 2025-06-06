@@ -59,6 +59,8 @@ MEMORY
   RAM   (rwx) : ORIGIN = __RAM_BASE, LENGTH = __RAM_SIZE
 }
 
+REGION_ALIAS("EXECUTABLE_MEMORY_SECTION", RAM);
+
 /* Linker script to place sections and symbol values. Should be used together
  * with other linker script that defines memory regions FLASH and RAM.
  * It references following symbols, which must be defined in code:
